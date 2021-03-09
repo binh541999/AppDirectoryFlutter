@@ -4,6 +4,8 @@ import 'package:redux_example/src/services/models/i_post.dart';
 import 'package:redux_example/src/services/redux/posts/posts_actions.dart';
 import 'package:redux_example/src/services/redux/store.dart';
 
+import 'src/navigations/index.dart';
+
 
 void main() async {
   await Redux.init();
@@ -19,10 +21,11 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: StoreProvider<AppState>(
-        store: Redux.store,
-        child: MyHomePage(title: 'Flutter Demo Home Page 1'),
-      ),
+      home: RootNavigation(),
+      // StoreProvider<AppState>(
+      //   store: Redux.store,
+      //   child: MyHomePage(title: 'Flutter Demo Home Page 1'),
+      // ),
     );
   }
 }
