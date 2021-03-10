@@ -17,15 +17,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: RootNavigation(),
-      // StoreProvider<AppState>(
-      //   store: Redux.store,
-      //   child: MyHomePage(title: 'Flutter Demo Home Page 1'),
-      // ),
+      home:
+      StoreProvider<AppState>(
+        store: Redux.store,
+        child:
+        //MyHomePage(title:'hello')
+        RootNavigation(),
+      ),
     );
   }
 }
@@ -43,7 +44,11 @@ class _MyHomePageState extends State<MyHomePage> {
   void _onFetchPostsPressed() {
     Redux.store.dispatch(fetchPostsAction);
   }
-
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(

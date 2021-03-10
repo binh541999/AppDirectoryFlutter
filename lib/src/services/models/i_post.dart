@@ -6,6 +6,7 @@ class IPost {
     if (json == null) return;
 
      id = json['employeeId'];
+
      employee = json;
 
   }

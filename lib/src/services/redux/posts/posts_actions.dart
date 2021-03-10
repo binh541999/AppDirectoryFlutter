@@ -20,25 +20,24 @@ Future<void> fetchPostsAction(Store<AppState> store) async {
   try {
     final response = await http.post(
         Uri.parse('https://home.kms-technology.com/api/Account/login'),
-        headers: {
-          "content-type" : "application/json",
-          "accept" : "application/json",
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
         },
         body: json.encode({
           'username': 'binhtatnguyen',
           'password': 'T61b2541999',
           'rememberMe': true,
         }));
+
     assert(response.statusCode == 200);
     var body = json.decode(response.body);
     SharedPreferences prefs = await SharedPreferences.getInstance();
-   await prefs.setString('token', body['token']);
+    await prefs.setString('token', body['token']);
     await prefs.setString('userCode', body['employeeCode']);
     fetchGetsAction(store);
-
   } catch (error) {
     print('Log in Failed $error');
-    store.dispatch(SetPostsStateAction(PostsState(isLoading: false)));
+    store.dispatch(SetPostsStateAction(PostsState(isLoading: false,isError: true)));
   }
 }
 
@@ -56,20 +55,20 @@ Future<void> fetchGetsAction(Store<AppState> store) async {
           'Accept': 'application/json',
           'Authorization': 'Bearer $token',
         });
-    print(response.statusCode);
     assert(response.statusCode == 200);
     final jsonData = json.decode(response.body);
-
+    jsonData['items'].sort((a, b) => a['shortName'].toString().toLowerCase().compareTo(b['shortName'].toString().toLowerCase()));
     store.dispatch(
       SetPostsStateAction(
         PostsState(
           isLoading: false,
+          isError: false,
           posts: IPost.listFromJson(jsonData['items']),
         ),
       ),
     );
   } catch (error) {
     print('Get Contact Failed $error');
-    store.dispatch(SetPostsStateAction(PostsState(isLoading: false)));
+    store.dispatch(SetPostsStateAction(PostsState(isLoading: false,isError: true)));
   }
 }

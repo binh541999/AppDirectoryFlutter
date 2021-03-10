@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:redux_example/src/scenes/Contact.dart';
-import 'package:redux_example/src/scenes/Group.dart';
+
 import 'package:redux_example/src/services/models/TabNavigationItem.dart';
 
 class RootNavigation extends StatelessWidget {
@@ -27,8 +26,7 @@ class Navigation extends StatefulWidget {
 /// This is the private State class that goes with MyStatefulWidget.
 class _MyStatefulWidgetState extends State<Navigation> {
   int _selectedIndex = 0;
-  static const TextStyle optionStyle =
-  TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
 
 
   void _onItemTapped(int index) {
@@ -41,6 +39,10 @@ class _MyStatefulWidgetState extends State<Navigation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+            (_selectedIndex==0)? 'Contact' : 'Group',
+        ),
 
       ),
       body: IndexedStack(
