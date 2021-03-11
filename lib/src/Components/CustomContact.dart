@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:redux_example/src/scenes/ContactDetail.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 
 class CustomContact extends StatefulWidget {
   CustomContact({Key key, @required this.employeeData,}) : super(key: key);

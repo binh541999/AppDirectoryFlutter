@@ -26,7 +26,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List fooList = ['one', 'two', 'three', 'four', 'five'];
-  List filteredList = List();
+  List filteredList = [];
   @override
   void initState() {
     super.initState();

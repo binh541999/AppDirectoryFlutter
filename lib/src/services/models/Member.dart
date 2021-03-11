@@ -1,19 +1,21 @@
 
 class Member {
-  final int employeeId;
-  final String shortName;
-  final String email;
-  final String skype;
-  final String userName;
-  final String currentOffice;
-  final String currentOfficeFullName;
-  final String empVietnameseName;
-  final String titleName;
-  final String employeePicUrl;
-  final String fullName;
+  int employeeId;
+  String employeeCode;
+  String shortName;
+  String email;
+  String skype;
+  String userName;
+  String currentOffice;
+  String currentOfficeFullName;
+  String empVietnameseName;
+  String titleName;
+  String employeePicUrl;
+  String fullName;
 
   Member({
     this.employeeId,
+    this.employeeCode,
     this.shortName,
     this.email,
     this.skype,
@@ -25,5 +27,40 @@ class Member {
     this.employeePicUrl,
     this.fullName,
   });
+
+  @override
+  List<Object> get props => [employeeId, userName];
+  Map<String, dynamic> toMap() {
+    return Map<String, dynamic>()
+      ..["employeeId"] = employeeId
+      ..["employeeCode"] = employeeCode
+      ..["shortName"] = shortName
+      ..["email"] = email
+      ..["skype"] = skype
+      ..["userName"] = userName
+      ..["currentOfficeFullName"] = currentOfficeFullName
+      ..["currentOffice"] = currentOffice
+      ..["empVietnameseName"] = empVietnameseName
+      ..["titleName"] = titleName
+      ..["employeePicUrl"] = employeePicUrl
+      ..["fullName"] = fullName
+    ;
+  }
+  static Member formJson(Map<String, dynamic> json) {
+    return Member()
+      ..employeeId = json["employeeId"]
+      ..employeeCode = json["employeeCode"]
+      ..shortName = json["shortName"]
+      ..email = json["email"]
+      ..skype = json["skype"]
+      ..userName = json["userName"]
+      ..currentOfficeFullName= json["currentOfficeFullName"]
+      ..currentOffice = json["currentOffice"]
+      ..empVietnameseName = json["empVietnameseName"]
+      ..titleName = json["titleName"]
+      ..employeePicUrl = json["employeePicUrl"]
+      ..fullName = json["fullName"];
+  }
+
 }
 

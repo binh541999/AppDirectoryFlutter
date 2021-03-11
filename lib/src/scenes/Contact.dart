@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 import 'package:redux_example/src/Components/CustomContact.dart';
+import 'package:redux_example/src/services/models/Member.dart';
 import 'package:redux_example/src/services/models/i_post.dart';
 import 'package:redux_example/src/services/redux/store.dart';
+import 'package:redux_example/src/services/sqlLite/dboMember.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../Components/CustomContact.dart';
 import '../services/models/i_post.dart';
@@ -20,23 +23,34 @@ class Contact extends StatefulWidget {
 class _Contact extends State<Contact> {
   List<IPost> fooList = [];
   List<IPost> filteredList = [];
+  List<Member> members=[];
   var _controller = TextEditingController();
+
   @override
   void initState() {
     super.initState();
-    filteredList = fooList;
+  }
+
+  void testPress() async{
+    members= await selectAll();
+    List<Member> members2= members.where(
+            (i) => i.employeeCode == '0001')
+        .toList();
+    print(members2[1].fullName);
+   // deleteDatabase(await getDatabasesPath());
   }
 
   void _onFetchPostsPressed() {
-    Redux.store.dispatch(fetchPostsAction);
+    Redux.store.dispatch(fetchPostsAction(Redux.store,'binhtatnguyen','T61b2541999'));
   }
 
   void filter(String inputString) {
-    setState(() {
-      filteredList =
-          fooList.where((i) => i.employee['shortName'].toLowerCase().contains(inputString)).toList();
-      print(filteredList[0].employee);
-    });
+    filteredList = fooList
+        .where(
+            (i) => i.employee['shortName'].toLowerCase().contains(inputString))
+        .toList();
+    print(filteredList[0].employee);
+    setState(() {});
   }
 
   @override
@@ -45,7 +59,7 @@ class _Contact extends State<Contact> {
       body: Column(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.fromLTRB(20,8,20,8),
+            padding: const EdgeInsets.fromLTRB(20, 8, 20, 8),
             child: TextField(
               controller: _controller,
               decoration: InputDecoration(
@@ -68,7 +82,9 @@ class _Contact extends State<Contact> {
           ),
           RawMaterialButton(
             child: Text("Fetch Posts"),
-            onPressed: _onFetchPostsPressed,
+            onPressed:
+            testPress,
+            //_onFetchPostsPressed,
           ),
           StoreConnector<AppState, bool>(
             distinct: true,
@@ -93,41 +109,54 @@ class _Contact extends State<Contact> {
             },
           ),
           Expanded(
-            child: StoreConnector<AppState, List<IPost>>(
+            child:
+            StoreConnector<AppState, List<IPost>>(
               distinct: true,
               converter: (store) {
-              fooList= store.state.postsState.posts;
-              filteredList = fooList;
-               return filteredList;
+                fooList = store.state.postsState.posts;
+                filteredList = fooList;
+                return store.state.postsState.posts;
               },
               builder: (context, posts) {
-                return new ListView.builder(
+                return ListView.builder(
                   itemCount: filteredList.length,
-                    itemBuilder: (BuildContext context, int index) =>
-                        CustomContact(
-                          employeeData: filteredList[index].employee,
-                          key: Key(filteredList[index].id.toString()),
-                        ),
+                  itemBuilder: (BuildContext context, int index) =>
+                      CustomContact(
+                    employeeData: filteredList[index].employee,
+                    key: Key(filteredList[index].id.toString()),
+                  ),
                   //children: _buildPosts(posts),
                 );
               },
             ),
-          ),
+          )
+          // Expanded(
+          //   child:
+          //       ListView.builder(
+          //         itemCount: filteredList.length,
+          //         itemBuilder: (BuildContext context, int index) =>
+          //             CustomContact(
+          //           employeeData: filteredList[index].employee,
+          //           key: Key(filteredList[index].id.toString()),
+          //         ),
+          //         //children: _buildPosts(posts),
+          //       ),
+          // ),
         ],
       ),
     );
   }
 
-  List<Widget> _buildPosts(List<IPost> posts) {
-    return posts
-        .map(
-          (post) => CustomContact(
-            employeeData: post.employee,
-            key: Key(post.id.toString()),
-          ),
-        )
-        .toList();
-  }
+  // List<Widget> _buildPosts(List<IPost> posts) {
+  //   return posts
+  //       .map(
+  //         (post) => CustomContact(
+  //           employeeData: post.employee,
+  //           key: Key(post.id.toString()),
+  //         ),
+  //       )
+  //       .toList();
+  // }
 }
 
 //

@@ -1,11 +1,15 @@
 import 'dart:convert';
-
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:redux/redux.dart';
 import 'package:meta/meta.dart';
+import 'package:redux_example/src/services/function/fetchDataintoDb.dart';
+import 'package:redux_example/src/services/models/Member.dart';
 import 'package:redux_example/src/services/models/i_post.dart';
 import 'package:redux_example/src/services/redux/posts/posts_state.dart';
 import 'package:redux_example/src/services/redux/store.dart';
 import 'package:http/http.dart' as http;
+import 'package:redux_example/src/services/sqlLite/dboMember.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @immutable
@@ -15,7 +19,7 @@ class SetPostsStateAction {
   SetPostsStateAction(this.postsState);
 }
 
-Future<void> fetchPostsAction(Store<AppState> store) async {
+Future<void> fetchPostsAction(Store<AppState> store,String username,String password) async {
   store.dispatch(SetPostsStateAction(PostsState(isLoading: true)));
   try {
     final response = await http.post(
@@ -24,8 +28,8 @@ Future<void> fetchPostsAction(Store<AppState> store) async {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: json.encode({
-          'username': 'binhtatnguyen',
-          'password': 'T61b2541999',
+          'username': '$username',
+          'password': '$password',
           'rememberMe': true,
         }));
 
@@ -45,6 +49,8 @@ Future<void> fetchGetsAction(Store<AppState> store) async {
   store.dispatch(SetPostsStateAction(PostsState(isLoading: true)));
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token');
+  String userCode = prefs.getString('userCode');
+
 
   try {
     final response = await http.get(
@@ -56,8 +62,15 @@ Future<void> fetchGetsAction(Store<AppState> store) async {
           'Authorization': 'Bearer $token',
         });
     assert(response.statusCode == 200);
+    print(response.body.length);
     final jsonData = json.decode(response.body);
     jsonData['items'].sort((a, b) => a['shortName'].toString().toLowerCase().compareTo(b['shortName'].toString().toLowerCase()));
+    await  dispatchContact(jsonData['items']);
+
+
+    // print (jsonData['items'].where((item) => (item["employeeCode"].toString().contains(userCode))));
+    //  await prefs.setStringList('userInfo',jsonData['items'].where((item) => (item["employeeCode"].toString().contains(userCode))));
+    //  print(prefs.getString('userInfo'));
     store.dispatch(
       SetPostsStateAction(
         PostsState(
