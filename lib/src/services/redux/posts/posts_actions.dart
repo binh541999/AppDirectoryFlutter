@@ -1,15 +1,11 @@
 import 'dart:convert';
-import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:redux/redux.dart';
 import 'package:meta/meta.dart';
 import 'package:redux_example/src/services/function/fetchDataintoDb.dart';
-import 'package:redux_example/src/services/models/Member.dart';
 import 'package:redux_example/src/services/models/i_post.dart';
 import 'package:redux_example/src/services/redux/posts/posts_state.dart';
 import 'package:redux_example/src/services/redux/store.dart';
 import 'package:http/http.dart' as http;
-import 'package:redux_example/src/services/sqlLite/dboMember.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 @immutable
@@ -49,7 +45,7 @@ Future<void> fetchGetsAction(Store<AppState> store) async {
   store.dispatch(SetPostsStateAction(PostsState(isLoading: true)));
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token');
-  String userCode = prefs.getString('userCode');
+
 
 
   try {

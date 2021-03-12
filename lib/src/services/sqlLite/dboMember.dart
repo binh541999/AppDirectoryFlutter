@@ -41,7 +41,7 @@ _initDatabase() async {
 
 Future<List<Member>> selectAll() async {
   // Get a reference to the database.
-  var db = await database;
+  final db = await database;
 
   // Query the table for all The Dogs.
   final List<Map<String, dynamic>> maps = await db.query('Members');
@@ -55,6 +55,7 @@ Future<List<Member>> selectAll() async {
       shortName: maps[i]["shortName"],
       email: maps[i]["email"],
       skype: maps[i]["skype"],
+        mobilePhone: maps[i]["mobilePhone"],
       userName: maps[i]["userName"],
       currentOfficeFullName: maps[i]["currentOfficeFullName"],
       currentOffice: maps[i]["currentOffice"],
@@ -68,7 +69,7 @@ Future<List<Member>> selectAll() async {
 
 Future<void> insertItem(Member member) async {
   // Get a reference to the database.
-  var db = await database;
+  final db = await database;
   print('insertItem');
   // Insert the Dog into the correct table. Also specify the
   // `conflictAlgorithm`. In this case, if the same dog is inserted

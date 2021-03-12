@@ -1,35 +1,37 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:redux_example/src/services/models/Member.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:contacts_service/contacts_service.dart';
 
 /// This is the stateful widget that the main application instantiates.
 class ContactDetail extends StatelessWidget {
   ContactDetail({Key key, @required this.employeeData}) : super(key: key);
-  final Map<String, dynamic> employeeData;
+  //final Map<String, dynamic> employeeData;
+  final Member employeeData;
 
   checkPermission() async {
     var status = await Permission.contacts.request();
     if (status.isGranted) {
       // Either the permission was already granted before or the user just granted it.
 
-      Contact newContact = new Contact(
-          company: 'KMS Technology, Inc',
-          emails:[
-            Item.fromMap(
-                {'label': 'emails', 'value': employeeData['email']})
-          ],
-          displayName: employeeData['shortName'],
-          jobTitle: employeeData['titleName'],
-          phones: [
-            Item.fromMap(
-                {'label': 'phones', 'value': employeeData['mobilePhone']})
-          ]);
-
-
-      await ContactsService.addContact(newContact);
-
-      await ContactsService.openContactForm();
+      // Contact newContact = new Contact(
+      //     company: 'KMS Technology, Inc',
+      //     emails:[
+      //       Item.fromMap(
+      //           {'label': 'emails', 'value': employeeData.email})
+      //     ],
+      //     displayName: employeeData['shortName'],
+      //     jobTitle: employeeData['titleName'],
+      //     phones: [
+      //       Item.fromMap(
+      //           {'label': 'phones', 'value': employeeData['mobilePhone']})
+      //     ]);
+      //
+      //
+      // await ContactsService.addContact(newContact);
+      //
+      // await ContactsService.openContactForm();
     } else {
       print('not granted');
     }
@@ -40,7 +42,7 @@ class ContactDetail extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text(employeeData['shortName']),
+        title: Text(employeeData.shortName),
       ),
       body: Container(
         child: Column(
@@ -58,17 +60,28 @@ class ContactDetail extends StatelessWidget {
                         width: 100,
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(90),
-                          child: Image.network(
-                            employeeData['employeePicUrl'],
+                          child:
+                          CachedNetworkImage(
                             height: 100,
                             alignment: Alignment.topCenter,
                             fit: BoxFit.fitWidth,
-                            errorBuilder: (BuildContext context,
-                                Object exception, StackTrace stackTrace) {
-                              return Image.asset(
-                                  'lib/src/assets/Image/avatarDefault.png');
-                            },
-                          ),
+                            imageUrl: employeeData.employeePicUrl,
+                            placeholder: (context, url) =>
+                                CircularProgressIndicator(),
+                            errorWidget: (context, url, error) => Image.asset(
+                                'lib/src/assets/Image/avatarDefault.png'),
+                          )
+                          // Image.network(
+                          //   employeeData.employeePicUrl,
+                          //   height: 100,
+                          //   alignment: Alignment.topCenter,
+                          //   fit: BoxFit.fitWidth,
+                          //   errorBuilder: (BuildContext context,
+                          //       Object exception, StackTrace stackTrace) {
+                          //     return Image.asset(
+                          //         'lib/src/assets/Image/avatarDefault.png');
+                          //   },
+                          // ),
                         ),
                       ),
                       SizedBox(
@@ -83,17 +96,17 @@ class ContactDetail extends StatelessWidget {
                               height: 5,
                             ),
                             Text(
-                              employeeData['fullName'],
+                              employeeData.fullName,
                               style: TextStyle(fontSize: 16.0),
                               maxLines: 2,
                               overflow: TextOverflow.clip,
                             ),
                             Text(
-                              employeeData['titleName'],
+                              employeeData.titleName,
                               overflow: TextOverflow.clip,
                             ),
                             Text(
-                              employeeData['employeeCode'],
+                              employeeData.employeeCode,
                               overflow: TextOverflow.clip,
                             ),
                             SizedBox(
@@ -119,7 +132,7 @@ class ContactDetail extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 16,
                             )),
-                        Text(employeeData['mobilePhone'],
+                        Text(employeeData.mobilePhone,
                             style: TextStyle(
                               fontSize: 16,
                             )),
@@ -134,12 +147,13 @@ class ContactDetail extends StatelessWidget {
                               child: Padding(
                                 padding: const EdgeInsets.all(10.0),
                                 child: FloatingActionButton(
+
                                     tooltip: 'Message',
                                     backgroundColor: Colors.transparent,
                                     foregroundColor: Colors.black,
                                     elevation: 0,
                                     onPressed: () => launch(
-                                        'sms:${employeeData['mobilePhone']}'),
+                                        'sms:${employeeData.mobilePhone}'),
                                     child: Icon(Icons.message)),
                               )),
                         ),
@@ -155,7 +169,7 @@ class ContactDetail extends StatelessWidget {
                                     foregroundColor: Colors.black,
                                     elevation: 0,
                                     onPressed: () => launch(
-                                        'tel:${employeeData['mobilePhone']}'),
+                                        'tel:${employeeData.mobilePhone}'),
                                     child: Icon(Icons.phone)),
                               )),
                         ),
@@ -170,7 +184,7 @@ class ContactDetail extends StatelessWidget {
               child: RawMaterialButton(
                 splashColor: Colors.grey,
                 //shape: const StadiumBorder(),
-                onPressed: () => launch('mailto:${employeeData['email']}'),
+                onPressed: () => launch('mailto:${employeeData.email}'),
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                   child: SizedBox(
@@ -183,7 +197,7 @@ class ContactDetail extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 16,
                             )),
-                        Text(employeeData['email'],
+                        Text(employeeData.email,
                             style: TextStyle(
                               fontSize: 16,
                             )),
@@ -199,9 +213,9 @@ class ContactDetail extends StatelessWidget {
                 splashColor: Colors.grey,
                 //shape: const StadiumBorder(),
                 onPressed: () async {
-                  if (await canLaunch('skype:${employeeData['skype']}?chat')) {
+                  if (await canLaunch('skype:${employeeData.skype}?chat')) {
                     await launch(
-                      'skype:${employeeData['skype']}?chat',
+                      'skype:${employeeData.skype}?chat',
                     );
                   }
                 },
@@ -217,7 +231,7 @@ class ContactDetail extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 16,
                             )),
-                        Text(employeeData['skype'],
+                        Text(employeeData.skype,
                             style: TextStyle(
                               fontSize: 16,
                             )),
@@ -241,7 +255,7 @@ class ContactDetail extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 16,
                           )),
-                      Text(employeeData['currentOfficeFullName'],
+                      Text(employeeData.currentOfficeFullName,
                           style: TextStyle(
                             fontSize: 16,
                           )),

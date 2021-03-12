@@ -11,7 +11,7 @@ class RootNavigation extends StatelessWidget {
     return MaterialApp(
       title: _title,
       home: Navigation(),
-      
+
     );
   }
 }
@@ -46,16 +46,18 @@ class _MyStatefulWidgetState extends State<Navigation> {
         ),
 
       ),
-      body: IndexedStack(
+      body:
+
+      IndexedStack(
         index:_selectedIndex,
         children: [
           for (final tabItem in TabNavigationItem.items )
             tabItem.screen,
         ],
       ),
-      // drawer: Drawer(
-      //   child: CustomDrawer()
-      // ),
+      drawer: Drawer(
+        child: CustomDrawer()
+      ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           for (final tabItem in TabNavigationItem.items )

@@ -5,6 +5,7 @@ class Member {
   String shortName;
   String email;
   String skype;
+  String mobilePhone;
   String userName;
   String currentOffice;
   String currentOfficeFullName;
@@ -19,6 +20,7 @@ class Member {
     this.shortName,
     this.email,
     this.skype,
+    this.mobilePhone,
     this.userName,
     this.currentOffice,
     this.currentOfficeFullName,
@@ -37,6 +39,7 @@ class Member {
       ..["shortName"] = shortName
       ..["email"] = email
       ..["skype"] = skype
+      ..["mobilePhone"] = mobilePhone
       ..["userName"] = userName
       ..["currentOfficeFullName"] = currentOfficeFullName
       ..["currentOffice"] = currentOffice
@@ -53,6 +56,7 @@ class Member {
       ..shortName = json["shortName"]
       ..email = json["email"]
       ..skype = json["skype"]
+      ..mobilePhone = json["mobilePhone"]
       ..userName = json["userName"]
       ..currentOfficeFullName= json["currentOfficeFullName"]
       ..currentOffice = json["currentOffice"]

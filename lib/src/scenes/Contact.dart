@@ -6,7 +6,7 @@ import 'package:redux_example/src/services/models/i_post.dart';
 import 'package:redux_example/src/services/redux/store.dart';
 import 'package:redux_example/src/services/sqlLite/dboMember.dart';
 import 'package:sqflite/sqflite.dart';
-
+import 'package:path/path.dart';
 import '../Components/CustomContact.dart';
 import '../services/models/i_post.dart';
 import '../services/redux/posts/posts_actions.dart';
@@ -22,34 +22,34 @@ class Contact extends StatefulWidget {
 
 class _Contact extends State<Contact> {
   List<IPost> fooList = [];
-  List<IPost> filteredList = [];
-  List<Member> members=[];
+  List<Member> filteredList = [];
+  List<Member> members = [];
+  bool doItJustOnce = false;
   var _controller = TextEditingController();
 
   @override
   void initState() {
+    //filteredList= testPress();
     super.initState();
   }
 
-  void testPress() async{
-    members= await selectAll();
-    List<Member> members2= members.where(
-            (i) => i.employeeCode == '0001')
-        .toList();
-    print(members2[1].fullName);
-   // deleteDatabase(await getDatabasesPath());
+
+
+  void deleteDB() async {
+    String path = join(await getDatabasesPath(), 'directory_database.db');
+    deleteDatabase(path);
   }
 
   void _onFetchPostsPressed() {
-    Redux.store.dispatch(fetchPostsAction(Redux.store,'binhtatnguyen','T61b2541999'));
+    Redux.store.dispatch(
+        fetchPostsAction(Redux.store, 'binhtatnguyen', 'T61b2541999'));
   }
 
   void filter(String inputString) {
-    filteredList = fooList
-        .where(
-            (i) => i.employee['shortName'].toLowerCase().contains(inputString))
+    filteredList = members
+        .where((i) => i.shortName.toLowerCase().contains(inputString))
         .toList();
-    print(filteredList[0].employee);
+   // print(filteredList[0].fullName);
     setState(() {});
   }
 
@@ -83,8 +83,14 @@ class _Contact extends State<Contact> {
           RawMaterialButton(
             child: Text("Fetch Posts"),
             onPressed:
-            testPress,
-            //_onFetchPostsPressed,
+                //deleteDB,
+                //testPress,
+                _onFetchPostsPressed,
+          ),
+          RawMaterialButton(
+            child: Text("Delete DB Posts"),
+            onPressed: deleteDB,
+            //testPress,
           ),
           StoreConnector<AppState, bool>(
             distinct: true,
@@ -108,55 +114,74 @@ class _Contact extends State<Contact> {
               }
             },
           ),
-          Expanded(
-            child:
-            StoreConnector<AppState, List<IPost>>(
-              distinct: true,
-              converter: (store) {
-                fooList = store.state.postsState.posts;
-                filteredList = fooList;
-                return store.state.postsState.posts;
-              },
-              builder: (context, posts) {
-                return ListView.builder(
-                  itemCount: filteredList.length,
-                  itemBuilder: (BuildContext context, int index) =>
-                      CustomContact(
-                    employeeData: filteredList[index].employee,
-                    key: Key(filteredList[index].id.toString()),
-                  ),
-                  //children: _buildPosts(posts),
-                );
-              },
-            ),
-          )
           // Expanded(
           //   child:
-          //       ListView.builder(
-          //         itemCount: filteredList.length,
+          //   StoreConnector<AppState, List<IPost>>(
+          //     distinct: true,
+          //     converter: (store) {
+          //       fooList = store.state.postsState.posts;
+          //       filteredList = fooList;
+          //       return store.state.postsState.posts;
+          //     },
+          //     builder: (context, posts) {
+          //       return ListView.builder(
+          //         itemCount: members.length,
           //         itemBuilder: (BuildContext context, int index) =>
           //             CustomContact(
-          //           employeeData: filteredList[index].employee,
-          //           key: Key(filteredList[index].id.toString()),
-          //         ),
+          //               employeeData: members[index],
+          //               key: Key(members[index].employeeId.toString()),
+          //             ),
+          //
+          //         // itemCount: filteredList.length,
+          //         // itemBuilder: (BuildContext context, int index) =>
+          //         //     CustomContact(
+          //         //   employeeData: filteredList[index].employee,
+          //         //   key: Key(filteredList[index].id.toString()),
+          //         // ),
           //         //children: _buildPosts(posts),
-          //       ),
-          // ),
+          //       );
+          //     },
+          //   ),
+          // )
+
+          Expanded(
+            child: FutureBuilder(
+                future: selectAll(),
+                builder: (BuildContext context, AsyncSnapshot<List<Member>> data) {
+              if (data.hasData) {
+                if (!doItJustOnce) {
+
+                  //You should define a bool like (bool doItJustOnce = false;) on your state.
+                  members = data.data;
+                  filteredList = members;
+                  doItJustOnce = !doItJustOnce; //this line helps to do just once.
+                }
+              }
+              return ListView.builder(
+                itemCount: filteredList.length,
+                itemBuilder: (BuildContext context, int index) => CustomContact(
+                  employeeData: filteredList[index],
+                  key: Key(filteredList[index].employeeId.toString()),
+                ),
+                //children: _buildPosts(posts),
+              );
+            }),
+          ),
         ],
       ),
     );
   }
 
-  // List<Widget> _buildPosts(List<IPost> posts) {
-  //   return posts
-  //       .map(
-  //         (post) => CustomContact(
-  //           employeeData: post.employee,
-  //           key: Key(post.id.toString()),
-  //         ),
-  //       )
-  //       .toList();
-  // }
+// List<Widget> _buildPosts(List<IPost> posts) {
+//   return posts
+//       .map(
+//         (post) => CustomContact(
+//           employeeData: post.employee,
+//           key: Key(post.id.toString()),
+//         ),
+//       )
+//       .toList();
+// }
 }
 
 //

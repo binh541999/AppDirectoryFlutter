@@ -12,6 +12,7 @@ Future<void> dispatchContact(List<dynamic> json){
         shortName: value["shortName"],
         email: value["email"],
         skype: value["skype"],
+        mobilePhone: value["mobilePhone"],
         userName: value["userName"],
         currentOfficeFullName: value["currentOfficeFullName"],
         currentOffice: value["currentOffice"],
