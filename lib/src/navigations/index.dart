@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:redux_example/src/Components/CustomDrawer.dart';
 
-import 'package:redux_example/src/services/models/TabNavigationItem.dart';
+import 'package:redux_example/src/models/TabNavigationItem.dart';
 
 class RootNavigation extends StatelessWidget {
   static const String _title = 'Flutter Code Sample';

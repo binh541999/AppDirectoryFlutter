@@ -1,4 +1,5 @@
-import 'package:redux_example/src/services/models/Member.dart';
+import 'package:redux_example/src/models/Member.dart';
+import 'package:redux_example/src/providers/MemberModel.dart';
 import 'package:redux_example/src/services/sqlLite/dboMember.dart';
 
 Future<void> dispatchContact(List<dynamic> json){
@@ -6,7 +7,7 @@ Future<void> dispatchContact(List<dynamic> json){
   for (final value in json )
     {
       //print('value $json');
-      insertItem(Member(
+      var member = new Member(
         employeeId: value['employeeId'],
         employeeCode: value['employeeCode'],
         shortName: value["shortName"],
@@ -20,7 +21,9 @@ Future<void> dispatchContact(List<dynamic> json){
         titleName: value["titleName"],
         employeePicUrl: value["employeePicUrl"],
         fullName: value["fullName"],
-      ));
-    }
+      );
+      insertItem(member);
+    };
+
 
 }

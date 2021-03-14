@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:redux/redux.dart';
 import 'package:meta/meta.dart';
 import 'package:redux_example/src/services/function/fetchDataintoDb.dart';
-import 'package:redux_example/src/services/models/i_post.dart';
+import 'package:redux_example/src/models/i_post.dart';
 import 'package:redux_example/src/services/redux/posts/posts_state.dart';
 import 'package:redux_example/src/services/redux/store.dart';
 import 'package:http/http.dart' as http;

@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:provider/provider.dart';
 import 'package:redux_example/src/Components/CustomContact.dart';
-import 'package:redux_example/src/services/models/Member.dart';
-import 'package:redux_example/src/services/models/i_post.dart';
+import 'package:redux_example/src/models/Member.dart';
+import 'package:redux_example/src/models/i_post.dart';
+import 'package:redux_example/src/providers/MemberModel.dart';
 import 'package:redux_example/src/services/redux/store.dart';
 import 'package:redux_example/src/services/sqlLite/dboMember.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../Components/CustomContact.dart';
-import '../services/models/i_post.dart';
+import '../models/i_post.dart';
 import '../services/redux/posts/posts_actions.dart';
 
 class Contact extends StatefulWidget {
@@ -30,31 +32,33 @@ class _Contact extends State<Contact> {
   @override
   void initState() {
     //filteredList= testPress();
+
     super.initState();
   }
-
-
 
   void deleteDB() async {
     String path = join(await getDatabasesPath(), 'directory_database.db');
     deleteDatabase(path);
   }
 
-  void _onFetchPostsPressed() {
-    Redux.store.dispatch(
+  void _onFetchPostsPressed(BuildContext context) async {
+
+   await Redux.store.dispatch(
         fetchPostsAction(Redux.store, 'binhtatnguyen', 'T61b2541999'));
+    Provider.of<MemberModel>(context,listen:false).loadData();
   }
 
   void filter(String inputString) {
     filteredList = members
         .where((i) => i.shortName.toLowerCase().contains(inputString))
         .toList();
-   // print(filteredList[0].fullName);
+    // print(filteredList[0].fullName);
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    //final model=Provider.of<MemberModel>(context,listen:false);
     return Scaffold(
       body: Column(
         children: <Widget>[
@@ -76,16 +80,19 @@ class _Contact extends State<Contact> {
               ),
               onChanged: (text) {
                 text = text.toLowerCase();
-                filter(text);
+                //filter(text);
+                Provider.of<MemberModel>(context, listen: false)
+                    .changeSearchString(text);
               },
             ),
           ),
           RawMaterialButton(
             child: Text("Fetch Posts"),
-            onPressed:
-                //deleteDB,
-                //testPress,
-                _onFetchPostsPressed,
+            onPressed: () =>
+                //Provider.of<MemberModel>(context, listen: false).loadData(),
+            //deleteDB,
+            //testPress,
+            _onFetchPostsPressed(context),
           ),
           RawMaterialButton(
             child: Text("Delete DB Posts"),
@@ -145,27 +152,39 @@ class _Contact extends State<Contact> {
           // )
 
           Expanded(
-            child: FutureBuilder(
-                future: selectAll(),
-                builder: (BuildContext context, AsyncSnapshot<List<Member>> data) {
-              if (data.hasData) {
-                if (!doItJustOnce) {
-
-                  //You should define a bool like (bool doItJustOnce = false;) on your state.
-                  members = data.data;
-                  filteredList = members;
-                  doItJustOnce = !doItJustOnce; //this line helps to do just once.
-                }
-              }
+            child: Consumer<MemberModel>(builder: (context, membersData, child) {
+              print(membersData.members.toString());
               return ListView.builder(
-                itemCount: filteredList.length,
+                itemCount: membersData.members.length,
                 itemBuilder: (BuildContext context, int index) => CustomContact(
-                  employeeData: filteredList[index],
-                  key: Key(filteredList[index].employeeId.toString()),
+                  employeeData: membersData.members[index],
+                  key: Key(membersData.members[index].employeeId.toString()),
                 ),
                 //children: _buildPosts(posts),
               );
-            }),
+            }
+                // child: FutureBuilder(
+                //     future: selectAll(),
+                //     builder: (BuildContext context, AsyncSnapshot<List<Member>> data) {
+                //   if (data.hasData) {
+                //     if (!doItJustOnce) {
+                //
+                //       //You should define a bool like (bool doItJustOnce = false;) on your state.
+                //       members = data.data;
+                //       filteredList = members;
+                //       doItJustOnce = !doItJustOnce; //this line helps to do just once.
+                //     }
+                //   }
+                //   return ListView.builder(
+                //     itemCount: filteredList.length,
+                //     itemBuilder: (BuildContext context, int index) => CustomContact(
+                //       employeeData: filteredList[index],
+                //       key: Key(filteredList[index].employeeId.toString()),
+                //     ),
+                //     //children: _buildPosts(posts),
+                //   );
+                // }
+                ),
           ),
         ],
       ),

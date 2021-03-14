@@ -1,4 +1,4 @@
-import 'package:redux_example/src/services/models/Member.dart';
+import 'package:redux_example/src/models/Member.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 

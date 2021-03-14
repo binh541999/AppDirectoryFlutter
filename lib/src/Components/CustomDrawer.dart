@@ -1,9 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:redux_example/src/services/models/Member.dart';
-import 'package:redux_example/src/services/models/i_post.dart';
-import 'package:redux_example/src/services/redux/store.dart';
-import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux_example/src/models/Member.dart';
 import 'package:redux_example/src/services/sqlLite/dboMember.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

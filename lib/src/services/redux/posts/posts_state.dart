@@ -1,5 +1,5 @@
 import 'package:meta/meta.dart';
-import 'package:redux_example/src/services/models/i_post.dart';
+import 'package:redux_example/src/models/i_post.dart';
 
 @immutable
 class PostsState {
