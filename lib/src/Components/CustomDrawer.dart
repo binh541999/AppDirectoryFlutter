@@ -1,20 +1,30 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:redux_example/src/models/Member.dart';
-import 'package:redux_example/src/services/sqlLite/dboMember.dart';
+import 'package:provider/provider.dart';
+import 'package:redux_example/src/providers/MemberModel.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
 class CustomDrawer extends StatelessWidget {
   static const String _title = 'Flutter Code Sample';
-
-
-  getCurrentUser() async {
-    List<Member> members = await selectAll();
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String userCode = prefs.getString('userCode');
-    List<Member> userInfo = members.where((i) => i.employeeCode == userCode).toList();
-    return userInfo[0];
+  void deleteDB(BuildContext context) async {
+    String path = join(await getDatabasesPath(), 'directory_database.db');
+    deleteDatabase(path).then((value) {
+      Provider.of<MemberModel>(context, listen: false).removeAll();
+    });
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.clear();
+    Navigator.pushNamed(context, '/');
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) =>
+    //           LogIn(),
+    //     ));
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -26,26 +36,47 @@ class CustomDrawer extends StatelessWidget {
         children: <Widget>[
           DrawerHeader(
             child: Column(children: [
-              FutureBuilder(
-                  future: getCurrentUser(),
-                  builder: (context, userInfo) {
+              Consumer<MemberModel>(builder: (context, membersData, child) {
 
-                    return (Container(
-                      width: 100,
-                      child: ClipRRect(
-                          borderRadius: BorderRadius.circular(90),
-                          child: CachedNetworkImage(
-                            height: 100,
-                            alignment: Alignment.topCenter,
-                            fit: BoxFit.fitWidth,
-                            imageUrl: userInfo.data.employeePicUrl,
-                            placeholder: (context, url) =>
-                                CircularProgressIndicator(),
-                            errorWidget: (context, url, error) => Image.asset(
-                                'lib/src/assets/Image/avatarDefault.png'),
-                          )),
-                    ));
-                  }),
+                return (Container(
+                  width: 100,
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(90),
+                      child: CachedNetworkImage(
+                        height: 100,
+                        alignment: Alignment.topCenter,
+                        fit: BoxFit.fitWidth,
+                        imageUrl: membersData.userInfo[0].employeePicUrl ?? null,
+                        placeholder: (context, url) =>
+                            CircularProgressIndicator(),
+                        errorWidget: (context, url, error) => Image.asset(
+                            'lib/src/assets/Image/avatarDefault.png'),
+                      )),
+                ));
+              }
+
+              ),
+              // FutureBuilder(
+              //     future: getCurrentUser(),
+              //     builder: (context, userInfo) {
+              //
+              //       return (Container(
+              //         width: 100,
+              //         child: ClipRRect(
+              //             borderRadius: BorderRadius.circular(90),
+              //             child: CachedNetworkImage(
+              //               height: 100,
+              //               alignment: Alignment.topCenter,
+              //               fit: BoxFit.fitWidth,
+              //               imageUrl: userInfo.data.employeePicUrl,
+              //               placeholder: (context, url) =>
+              //                   CircularProgressIndicator(),
+              //               errorWidget: (context, url, error) => Image.asset(
+              //                   'lib/src/assets/Image/avatarDefault.png'),
+              //             )),
+              //       ));
+              //     }),
+
             ]),
             decoration: BoxDecoration(
               color: Colors.blue,
@@ -60,14 +91,10 @@ class CustomDrawer extends StatelessWidget {
               Navigator.pop(context);
             },
           ),
-          ListTile(
-            title: Text('Item 2'),
-            onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              Navigator.pop(context);
-            },
+          RawMaterialButton(
+            child: Text("Log Out"),
+            onPressed:() => deleteDB(context),
+            //testPress,
           ),
         ],
       ),

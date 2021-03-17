@@ -70,7 +70,7 @@ Future<List<Member>> selectAll() async {
 Future<void> insertItem(Member member) async {
   // Get a reference to the database.
   final db = await database;
-  print('insertItem');
+  //print('insertItem');
   // Insert the Dog into the correct table. Also specify the
   // `conflictAlgorithm`. In this case, if the same dog is inserted
   // multiple times, it replaces the previous data.

@@ -1,22 +1,15 @@
 import 'dart:convert';
-import 'package:redux/redux.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
+import 'package:redux_example/src/providers/MemberModel.dart';
+import 'package:redux_example/src/providers/StatusModel.dart';
 import 'package:redux_example/src/services/function/fetchDataintoDb.dart';
 import 'package:redux_example/src/models/i_post.dart';
-import 'package:redux_example/src/services/redux/posts/posts_state.dart';
-import 'package:redux_example/src/services/redux/store.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-@immutable
-class SetPostsStateAction {
-  final PostsState postsState;
-
-  SetPostsStateAction(this.postsState);
-}
-
-Future<void> fetchPostsAction(Store<AppState> store,String username,String password) async {
-  store.dispatch(SetPostsStateAction(PostsState(isLoading: true)));
+Future<void> fetchPostsAction(BuildContext context,String username,String password) async {
+  Provider.of<StatusModel>(context, listen: false).isLoading = true;
   try {
     final response = await http.post(
         Uri.parse('https://home.kms-technology.com/api/Account/login'),
@@ -34,17 +27,20 @@ Future<void> fetchPostsAction(Store<AppState> store,String username,String passw
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', body['token']);
     await prefs.setString('userCode', body['employeeCode']);
-    fetchGetsAction(store);
+    fetchGetsAction(context);
   } catch (error) {
     print('Log in Failed $error');
-    store.dispatch(SetPostsStateAction(PostsState(isLoading: false,isError: true)));
+    Provider.of<StatusModel>(context, listen: false).isLoading = false;
+    Provider.of<StatusModel>(context, listen: false).isError = true;
+    //store.dispatch(SetPostsStateAction(PostsState(isLoading: false,isError: true)));
   }
 }
 
-Future<void> fetchGetsAction(Store<AppState> store) async {
-  store.dispatch(SetPostsStateAction(PostsState(isLoading: true)));
+Future<void> fetchGetsAction(BuildContext context) async {
+  Provider.of<StatusModel>(context, listen: false).isLoading = true;
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token');
+
   try {
     final response = await http.get(
         Uri.parse(
@@ -58,23 +54,24 @@ Future<void> fetchGetsAction(Store<AppState> store) async {
     //print(response.body.length);
     final jsonData = json.decode(response.body);
     jsonData['items'].sort((a, b) => a['shortName'].toString().toLowerCase().compareTo(b['shortName'].toString().toLowerCase()));
-    await  dispatchContact(jsonData['items']);
-
+    //await
+   // Future.wait([
+    dispatchContact(jsonData['items']);
+    //]).catchError((onError)=> print(onError));
+    Provider.of<MemberModel>(context, listen: false).loadData();
+    Provider.of<StatusModel>(context, listen: false).isLoading = false;
+    Provider.of<StatusModel>(context, listen: false).isError = false;
+    Provider.of<StatusModel>(context, listen: false).isFirstOpen = false;
+print('get contact done');
 
     // print (jsonData['items'].where((item) => (item["employeeCode"].toString().contains(userCode))));
     //  await prefs.setStringList('userInfo',jsonData['items'].where((item) => (item["employeeCode"].toString().contains(userCode))));
     //  print(prefs.getString('userInfo'));
-    store.dispatch(
-      SetPostsStateAction(
-        PostsState(
-          isLoading: false,
-          isError: false,
-          posts: IPost.listFromJson(jsonData['items']),
-        ),
-      ),
-    );
+
   } catch (error) {
     print('Get Contact Failed $error');
-    store.dispatch(SetPostsStateAction(PostsState(isLoading: false,isError: true)));
+    Provider.of<StatusModel>(context, listen: false).isLoading = false;
+    Provider.of<StatusModel>(context, listen: false).isError = true;
+
   }
 }

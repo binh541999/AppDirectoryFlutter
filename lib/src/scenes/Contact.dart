@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
 import 'package:provider/provider.dart';
 import 'package:redux_example/src/Components/CustomContact.dart';
 import 'package:redux_example/src/models/Member.dart';
-import 'package:redux_example/src/models/i_post.dart';
 import 'package:redux_example/src/providers/MemberModel.dart';
-import 'package:redux_example/src/services/redux/store.dart';
-import 'package:redux_example/src/services/sqlLite/dboMember.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import 'package:redux_example/src/providers/StatusModel.dart';
+import 'package:redux_example/src/services/api/fetchData.dart';
+
 import '../Components/CustomContact.dart';
-import '../models/i_post.dart';
-import '../services/redux/posts/posts_actions.dart';
+
 
 class Contact extends StatefulWidget {
   Contact({
@@ -23,7 +19,6 @@ class Contact extends StatefulWidget {
 }
 
 class _Contact extends State<Contact> {
-  List<IPost> fooList = [];
   List<Member> filteredList = [];
   List<Member> members = [];
   bool doItJustOnce = false;
@@ -36,16 +31,14 @@ class _Contact extends State<Contact> {
     super.initState();
   }
 
-  void deleteDB() async {
-    String path = join(await getDatabasesPath(), 'directory_database.db');
-    deleteDatabase(path);
-  }
+
 
   void _onFetchPostsPressed(BuildContext context) async {
-
-   await Redux.store.dispatch(
-        fetchPostsAction(Redux.store, 'binhtatnguyen', 'T61b2541999'));
-    Provider.of<MemberModel>(context,listen:false).loadData();
+    // await Redux.store.dispatch(
+    //     fetchPostsAction(Redux.store, 'binhtatnguyen', 'T61b2541999'));
+   await fetchPostsAction(context,'binhtatnguyen', 'T61b2541999');
+    Provider.of<MemberModel>(context, listen: false).loadData();
+   // Provider.of<MemberModel>(context, listen: false).loadUserInfo();
   }
 
   void filter(String inputString) {
@@ -70,7 +63,11 @@ class _Contact extends State<Contact> {
                 contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
                 border: OutlineInputBorder(),
                 suffixIcon: IconButton(
-                  onPressed: _controller.clear,
+                  onPressed:(){
+                    Provider.of<MemberModel>(context, listen: false)
+                        .changeSearchString('');
+                  return _controller.clear();
+                  } ,
                   icon: Icon(Icons.clear),
                 ),
                 hintText: 'Search ',
@@ -80,7 +77,6 @@ class _Contact extends State<Contact> {
               ),
               onChanged: (text) {
                 text = text.toLowerCase();
-                //filter(text);
                 Provider.of<MemberModel>(context, listen: false)
                     .changeSearchString(text);
               },
@@ -89,71 +85,44 @@ class _Contact extends State<Contact> {
           RawMaterialButton(
             child: Text("Fetch Posts"),
             onPressed: () =>
-                //Provider.of<MemberModel>(context, listen: false).loadData(),
-            //deleteDB,
-            //testPress,
-            _onFetchPostsPressed(context),
+                //deleteDB,
+                //testPress,
+                _onFetchPostsPressed(context),
           ),
-          RawMaterialButton(
-            child: Text("Delete DB Posts"),
-            onPressed: deleteDB,
-            //testPress,
-          ),
-          StoreConnector<AppState, bool>(
-            distinct: true,
-            converter: (store) => store.state.postsState.isLoading,
-            builder: (context, isLoading) {
-              if (isLoading) {
-                return CircularProgressIndicator();
-              } else {
-                return SizedBox.shrink();
-              }
-            },
-          ),
-          StoreConnector<AppState, bool>(
-            distinct: true,
-            converter: (store) => store.state.postsState.isError,
-            builder: (context, isError) {
-              if (isError) {
-                return Text("Failed to get posts");
-              } else {
-                return SizedBox.shrink();
-              }
-            },
-          ),
-          // Expanded(
-          //   child:
-          //   StoreConnector<AppState, List<IPost>>(
-          //     distinct: true,
-          //     converter: (store) {
-          //       fooList = store.state.postsState.posts;
-          //       filteredList = fooList;
-          //       return store.state.postsState.posts;
-          //     },
-          //     builder: (context, posts) {
-          //       return ListView.builder(
-          //         itemCount: members.length,
-          //         itemBuilder: (BuildContext context, int index) =>
-          //             CustomContact(
-          //               employeeData: members[index],
-          //               key: Key(members[index].employeeId.toString()),
-          //             ),
-          //
-          //         // itemCount: filteredList.length,
-          //         // itemBuilder: (BuildContext context, int index) =>
-          //         //     CustomContact(
-          //         //   employeeData: filteredList[index].employee,
-          //         //   key: Key(filteredList[index].id.toString()),
-          //         // ),
-          //         //children: _buildPosts(posts),
-          //       );
-          //     },
-          //   ),
-          // )
 
+          Consumer<StatusModel>(builder: (context, statusData, child) {
+            if (statusData.isLoading) {
+              return CircularProgressIndicator();
+            } else {
+              return SizedBox.shrink();
+            }
+          }),
+          // StoreConnector<AppState, bool>(
+          //   distinct: true,
+          //   converter: (store) => store.state.postsState.isLoading,
+          //   builder: (context, isLoading) {
+          //     if (isLoading) {
+          //       return CircularProgressIndicator();
+          //     } else {
+          //       return SizedBox.shrink();
+          //     }
+          //   },
+          // ),
+          // StoreConnector<AppState, bool>(
+          //   distinct: true,
+          //   converter: (store) => store.state.postsState.isError,
+          //   builder: (context, isError) {
+          //     if (isError) {
+          //       return Text("Failed to get posts");
+          //     } else {
+          //       return SizedBox.shrink();
+          //     }
+          //   },
+          // ),
           Expanded(
-            child: Consumer<MemberModel>(builder: (context, membersData, child) {
-              print(membersData.members.toString());
+            child:
+                Consumer<MemberModel>(builder: (context, membersData, child) {
+             // print(membersData.members.toString());
               return ListView.builder(
                 itemCount: membersData.members.length,
                 itemBuilder: (BuildContext context, int index) => CustomContact(
@@ -162,55 +131,10 @@ class _Contact extends State<Contact> {
                 ),
                 //children: _buildPosts(posts),
               );
-            }
-                // child: FutureBuilder(
-                //     future: selectAll(),
-                //     builder: (BuildContext context, AsyncSnapshot<List<Member>> data) {
-                //   if (data.hasData) {
-                //     if (!doItJustOnce) {
-                //
-                //       //You should define a bool like (bool doItJustOnce = false;) on your state.
-                //       members = data.data;
-                //       filteredList = members;
-                //       doItJustOnce = !doItJustOnce; //this line helps to do just once.
-                //     }
-                //   }
-                //   return ListView.builder(
-                //     itemCount: filteredList.length,
-                //     itemBuilder: (BuildContext context, int index) => CustomContact(
-                //       employeeData: filteredList[index],
-                //       key: Key(filteredList[index].employeeId.toString()),
-                //     ),
-                //     //children: _buildPosts(posts),
-                //   );
-                // }
-                ),
+            }),
           ),
         ],
       ),
     );
   }
-
-// List<Widget> _buildPosts(List<IPost> posts) {
-//   return posts
-//       .map(
-//         (post) => CustomContact(
-//           employeeData: post.employee,
-//           key: Key(post.id.toString()),
-//         ),
-//       )
-//       .toList();
-// }
 }
-
-//
-// ListView.builder(itemBuilder: (
-// context, index) {
-// return CustomContact(
-// shortName: 'Test Name',
-// titleName: 'Test titleName',
-// picURL: 'https://hr.kms-technology.com/api/employees/photo/600?code=WWlMYMQAzAC4VlscblYs3YsoAT0xvymkddOQyyA4Pdz4',
-// )
-// ;
-// }
-// )
