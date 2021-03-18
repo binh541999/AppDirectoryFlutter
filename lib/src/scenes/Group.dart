@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:redux_example/src/Components/CustomGroupAvatar.dart';
 
 
 class Group extends StatelessWidget {
@@ -10,21 +11,21 @@ class Group extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(),
+      home: MyGroupPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({
+class MyGroupPage extends StatefulWidget {
+  MyGroupPage({
     Key key,
   }) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _MyGroupPageState createState() => _MyGroupPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyGroupPageState extends State<MyGroupPage> {
   List fooList = ['one', 'two', 'three', 'four', 'five'];
   List filteredList = [];
   @override
@@ -42,21 +43,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
       body: Column(
         children: [
-          TextField(
-            decoration: InputDecoration(
-              hintText: 'Search ',
-              hintStyle: TextStyle(
-                fontSize: 14,
-              ),
-            ),
-            onChanged: (text) {
-              text = text.toLowerCase();
-              filter(text);
-            },
-          ),
+          CustomGroupAvatar(),
           Expanded(
             child: ListView.builder(
               itemCount: filteredList.length,

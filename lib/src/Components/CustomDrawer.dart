@@ -2,26 +2,28 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:redux_example/src/providers/MemberModel.dart';
+import 'package:redux_example/src/providers/StatusModel.dart';
+import 'package:redux_example/src/scenes/LogIn.dart';
+import 'package:redux_example/src/services/sqlLite/dboMember.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 
 class CustomDrawer extends StatelessWidget {
   static const String _title = 'Flutter Code Sample';
-  void deleteDB(BuildContext context) async {
-    String path = join(await getDatabasesPath(), 'directory_database.db');
-    deleteDatabase(path).then((value) {
+  Future<void> deleteDB(BuildContext context) async {
+    deleteData();
+
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (BuildContext context) => LogIn())).then((value){
+
+      Provider.of<StatusModel>(context, listen: false).removeAll();
       Provider.of<MemberModel>(context, listen: false).removeAll();
     });
+      //Navigator.pushNamed(context, '/');
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.clear();
-    Navigator.pushNamed(context, '/');
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) =>
-    //           LogIn(),
-    //     ));
+
+
+
   }
 
 
@@ -93,7 +95,10 @@ class CustomDrawer extends StatelessWidget {
           ),
           RawMaterialButton(
             child: Text("Log Out"),
-            onPressed:() => deleteDB(context),
+            onPressed:() {
+              deleteDB(context);
+
+              },
             //testPress,
           ),
         ],

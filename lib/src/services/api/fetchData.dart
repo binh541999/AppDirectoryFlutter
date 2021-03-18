@@ -8,7 +8,7 @@ import 'package:redux_example/src/models/i_post.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> fetchPostsAction(BuildContext context,String username,String password) async {
+Future<bool> fetchLogin(BuildContext context,String username,String password) async {
   Provider.of<StatusModel>(context, listen: false).isLoading = true;
   try {
     final response = await http.post(
@@ -27,16 +27,20 @@ Future<void> fetchPostsAction(BuildContext context,String username,String passwo
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('token', body['token']);
     await prefs.setString('userCode', body['employeeCode']);
-    fetchGetsAction(context);
+    await fetchGetContact(context).then((value) {
+      if(value) return true;
+    }).catchError((onError)=>  false);
+    return true;
   } catch (error) {
     print('Log in Failed $error');
     Provider.of<StatusModel>(context, listen: false).isLoading = false;
     Provider.of<StatusModel>(context, listen: false).isError = true;
     //store.dispatch(SetPostsStateAction(PostsState(isLoading: false,isError: true)));
+    return false;
   }
 }
 
-Future<void> fetchGetsAction(BuildContext context) async {
+Future<bool> fetchGetContact(BuildContext context) async {
   Provider.of<StatusModel>(context, listen: false).isLoading = true;
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String token = prefs.getString('token');
@@ -58,12 +62,12 @@ Future<void> fetchGetsAction(BuildContext context) async {
    // Future.wait([
     dispatchContact(jsonData['items']);
     //]).catchError((onError)=> print(onError));
-    Provider.of<MemberModel>(context, listen: false).loadData();
+   await Provider.of<MemberModel>(context, listen: false).loadData();
     Provider.of<StatusModel>(context, listen: false).isLoading = false;
     Provider.of<StatusModel>(context, listen: false).isError = false;
     Provider.of<StatusModel>(context, listen: false).isFirstOpen = false;
 print('get contact done');
-
+return true;
     // print (jsonData['items'].where((item) => (item["employeeCode"].toString().contains(userCode))));
     //  await prefs.setStringList('userInfo',jsonData['items'].where((item) => (item["employeeCode"].toString().contains(userCode))));
     //  print(prefs.getString('userInfo'));
@@ -72,6 +76,6 @@ print('get contact done');
     print('Get Contact Failed $error');
     Provider.of<StatusModel>(context, listen: false).isLoading = false;
     Provider.of<StatusModel>(context, listen: false).isError = true;
-
+  return false;
   }
 }

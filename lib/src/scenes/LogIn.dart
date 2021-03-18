@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:redux_example/src/providers/MemberModel.dart';
+import 'package:redux_example/src/navigations/index.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:redux_example/src/providers/StatusModel.dart';
 import 'package:redux_example/src/services/api/fetchData.dart';
 
@@ -11,7 +12,7 @@ class LogIn extends StatefulWidget {
 
 // Define a corresponding State class.
 // This class holds the data related to the Form.
-class _LogIn extends State<LogIn> {
+class _LogIn extends State<LogIn> with AutomaticKeepAliveClientMixin {
   // Create a text controller and use it to retrieve the current value
   // of the TextField.
   final password = TextEditingController();
@@ -24,10 +25,20 @@ class _LogIn extends State<LogIn> {
     username.dispose();
     super.dispose();
   }
+  @override
+  bool get wantKeepAlive => true;
 
   void _onFetchPostsPressed(BuildContext context) async {
- await  fetchPostsAction(context, 'binhtatnguyen', 'T61b2541999').then((value) {
-   Navigator.pushNamed(context, '/homePage');
+ await  fetchLogin(context, 'binhtatnguyen', 'T61b2541999').then((value) {
+   print(value);
+   if(value)
+       // Navigator.pushReplacementNamed(context, '/homePage');
+     SchedulerBinding.instance.addPostFrameCallback((_) {
+       Navigator.pushReplacement(context,
+           MaterialPageRoute(builder: (BuildContext context) => RootNavigation()));
+     });
+   // Navigator.pushReplacement(context,
+   //     MaterialPageRoute(builder: (BuildContext context) => RootNavigation()));
  }).catchError((value) => print(value));
 
 

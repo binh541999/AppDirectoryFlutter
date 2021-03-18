@@ -71,20 +71,7 @@ class _CustomContact extends State<CustomContact> {
                                   CircularProgressIndicator(),
                               errorWidget: (context, url, error) => Image.asset(
                                   'lib/src/assets/Image/avatarDefault.png'),
-                            )
-                            // Image.network(
-                            //   widget.employeeData.employeePicUrl,
-                            //   height: 70,
-                            //   alignment: Alignment.topCenter,
-                            //   fit: BoxFit.fitWidth,
-                            //   errorBuilder: (BuildContext context,
-                            //       Object exception,
-                            //       StackTrace stackTrace) {
-                            //     return Image.asset(
-                            //         'lib/src/assets/Image/avatarDefault.png');
-                            //   },
-                            // ),
-                            ),
+                            )),
                       ),
                       SizedBox(
                         width: 10.0,
@@ -118,14 +105,14 @@ class _CustomContact extends State<CustomContact> {
                     alignment: Alignment.centerRight,
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child:
-                      FloatingActionButton(
+                      child: FloatingActionButton(
+                          heroTag: widget.employeeData.mobilePhone,
                           tooltip: 'Call',
                           backgroundColor: Colors.transparent,
                           foregroundColor: Colors.black,
                           elevation: 0,
-                          onPressed: () => launch(
-                              'tel:${widget.employeeData.mobilePhone}'),
+                          onPressed: () =>
+                              launch('tel:${widget.employeeData.mobilePhone}'),
                           child: Icon(Icons.phone)),
                     )),
               ),

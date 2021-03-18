@@ -5,6 +5,8 @@ import 'package:redux_example/src/models/Member.dart';
 import 'package:redux_example/src/providers/MemberModel.dart';
 import 'package:redux_example/src/providers/StatusModel.dart';
 import 'package:redux_example/src/services/api/fetchData.dart';
+import 'package:redux_example/src/services/sqlLite/dboMember.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Components/CustomContact.dart';
 
@@ -26,20 +28,11 @@ class _Contact extends State<Contact> {
 
   @override
   void initState() {
-    //filteredList= testPress();
 
     super.initState();
   }
 
 
-
-  void _onFetchPostsPressed(BuildContext context) async {
-    // await Redux.store.dispatch(
-    //     fetchPostsAction(Redux.store, 'binhtatnguyen', 'T61b2541999'));
-   await fetchPostsAction(context,'binhtatnguyen', 'T61b2541999');
-    Provider.of<MemberModel>(context, listen: false).loadData();
-   // Provider.of<MemberModel>(context, listen: false).loadUserInfo();
-  }
 
   void filter(String inputString) {
     filteredList = members
@@ -51,7 +44,6 @@ class _Contact extends State<Contact> {
 
   @override
   Widget build(BuildContext context) {
-    //final model=Provider.of<MemberModel>(context,listen:false);
     return Scaffold(
       body: Column(
         children: <Widget>[
@@ -82,13 +74,6 @@ class _Contact extends State<Contact> {
               },
             ),
           ),
-          RawMaterialButton(
-            child: Text("Fetch Posts"),
-            onPressed: () =>
-                //deleteDB,
-                //testPress,
-                _onFetchPostsPressed(context),
-          ),
 
           Consumer<StatusModel>(builder: (context, statusData, child) {
             if (statusData.isLoading) {
@@ -97,28 +82,6 @@ class _Contact extends State<Contact> {
               return SizedBox.shrink();
             }
           }),
-          // StoreConnector<AppState, bool>(
-          //   distinct: true,
-          //   converter: (store) => store.state.postsState.isLoading,
-          //   builder: (context, isLoading) {
-          //     if (isLoading) {
-          //       return CircularProgressIndicator();
-          //     } else {
-          //       return SizedBox.shrink();
-          //     }
-          //   },
-          // ),
-          // StoreConnector<AppState, bool>(
-          //   distinct: true,
-          //   converter: (store) => store.state.postsState.isError,
-          //   builder: (context, isError) {
-          //     if (isError) {
-          //       return Text("Failed to get posts");
-          //     } else {
-          //       return SizedBox.shrink();
-          //     }
-          //   },
-          // ),
           Expanded(
             child:
                 Consumer<MemberModel>(builder: (context, membersData, child) {

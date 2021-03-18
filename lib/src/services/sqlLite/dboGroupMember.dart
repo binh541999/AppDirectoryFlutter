@@ -1,38 +1,39 @@
-import 'package:redux_example/src/models/Groups.dart';
+import 'package:redux_example/src/models/GroupMember.dart';
 import 'package:redux_example/src/services/sqlLite/dboDB.dart';
 import 'package:sqflite/sqflite.dart';
 
 
-const String TABLE_NAME = "Groups";
+const String TABLE_NAME = "GroupMember";
 
 
-void populateDbGroup(Database db) async {
+void populateDbGroupMember(Database db) async {
   await db.execute(
-    """CREATE TABLE $TABLE_NAME(    id INTEGER PRIMARY KEY AUTOINCREMENT,                                      
-                                     name VARCHAR(255) 
+    """CREATE TABLE $TABLE_NAME(   id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                        idGroup INTEGER , 
+                                         idMember INTEGER 
             )""",
   );
 }
 
-Future<List<Groups>> selectAll() async {
+Future<List<GroupMember>> selectAll() async {
   // Get a reference to the database.
   final db = await database;
 
   // Query the table for all The Dogs.
-  final List<Map<String, dynamic>> maps = await db.query('Groups');
+  final List<Map<String, dynamic>> maps = await db.query('GroupMember');
   //List<Movie> movies = maps.map((e) => Movie.formJson(e)).toList();
   // Convert the List<Map<String, dynamic> into a List<Dog>.
   return List.generate(maps.length, (i) {
     return
-      Groups(
-        id: maps[i]['id'],
-        name: maps[i]['name'],
+      GroupMember(
+        idGroup: maps[i]['idGroup'],
+        idMember: maps[i]['idMember'],
 
       );
   });
 }
 
-Future<void> insertItem(Groups groups) async {
+Future<void> insertItem(GroupMember groupMember) async {
   // Get a reference to the database.
   final db = await database;
   //print('insertItem');
@@ -40,8 +41,8 @@ Future<void> insertItem(Groups groups) async {
   // `conflictAlgorithm`. In this case, if the same dog is inserted
   // multiple times, it replaces the previous data.
   await db.insert(
-    'Groups',
-    groups.toMap(),
+    'GroupMember',
+    groupMember.toMap(),
   );
 }
 
@@ -54,6 +55,6 @@ Future<void> deleteData() async {
   // `conflictAlgorithm`. In this case, if the same dog is inserted
   // multiple times, it replaces the previous data.
   await db.delete(
-      'Groups'
+      'GroupMember'
   );
 }

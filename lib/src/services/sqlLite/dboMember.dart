@@ -1,24 +1,40 @@
 import 'package:redux_example/src/models/Member.dart';
+import 'package:redux_example/src/services/sqlLite/dboDB.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-const String DB_NAME = "directory_database.db";
-Database _database;
-
-Future<Database> get database async {
-  if (_database != null) return _database;
-  _database = await _initDatabase();
-  return _database;
-}
 
 const String TABLE_NAME = "Members";
 
-_initDatabase() async {
-  return await openDatabase(
-    join(await getDatabasesPath(), DB_NAME),
-    onCreate: (db, version) {
-      return db.execute(
-        """CREATE TABLE $TABLE_NAME(    id INTEGER PRIMARY KEY AUTOINCREMENT, 
+// _initDatabase() async {
+//   return await openDatabase(
+//     join(await getDatabasesPath(), DB_NAME),
+//     onCreate: (db, version) {
+//       return db.execute(
+//         """CREATE TABLE $TABLE_NAME(    id INTEGER PRIMARY KEY AUTOINCREMENT,
+//                                         employeeId INTEGER,
+//                                         skype VARCHAR(255),
+//                                         email VARCHAR(255),
+//                                         userName VARCHAR(255),
+//                                         employeeCode VARCHAR(255),
+//                                         currentOffice VARCHAR(255),
+//                                         currentOfficeFullName VARCHAR(255),
+//                                         empVietnameseName VARCHAR(255),
+//                                         titleName VARCHAR(255),
+//                                         mobilePhone VARCHAR(255),
+//                                         employeePicUrl VARCHAR(255),
+//                                         fullName VARCHAR(255),
+//                                         shortName VARCHAR(255)
+//             )""",
+//       );
+//     },
+//     version: 1,
+//   );
+// }
+
+void populateDbMember(Database db) async {
+  await db.execute(
+    """CREATE TABLE $TABLE_NAME(    id INTEGER PRIMARY KEY AUTOINCREMENT, 
                                         employeeId INTEGER,
                                         skype VARCHAR(255),
                                         email VARCHAR(255),
@@ -33,9 +49,6 @@ _initDatabase() async {
                                         fullName VARCHAR(255),
                                         shortName VARCHAR(255) 
             )""",
-      );
-    },
-    version: 1,
   );
 }
 
@@ -77,5 +90,18 @@ Future<void> insertItem(Member member) async {
   await db.insert(
     'Members',
     member.toMap(),
+  );
+}
+
+
+Future<void> deleteData() async {
+  // Get a reference to the database.
+  final db = await database;
+  //print('insertItem');
+  // Insert the Dog into the correct table. Also specify the
+  // `conflictAlgorithm`. In this case, if the same dog is inserted
+  // multiple times, it replaces the previous data.
+  await db.delete(
+    'Members'
   );
 }

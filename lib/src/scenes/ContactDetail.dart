@@ -148,7 +148,7 @@ class ContactDetail extends StatelessWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: FloatingActionButton(
-                                      heroTag: employeeData.employeeId,
+                                      heroTag: employeeData.employeeId.toString(),
                                       tooltip: 'Message',
                                       backgroundColor: Colors.transparent,
                                       foregroundColor: Colors.black,

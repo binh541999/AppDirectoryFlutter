@@ -24,6 +24,7 @@ class StatusModel with ChangeNotifier {
 
   Future<void> _saveFirstOpen() async {
     await SharedPreferences.getInstance().then((prefs) {
+      print('first Open ${_currentPrefs.isFirstOpen}');
       prefs.setBool('isFirstOpen', _currentPrefs.isFirstOpen);
     });
   }
@@ -62,11 +63,11 @@ class StatusModel with ChangeNotifier {
     _saveSignOut();
   }
 
-  // void removeAll() {
-  //   _currentPrefs.;
-  //   // This call tells the widgets that are listening to this model to rebuild.
-  //   notifyListeners();
-  // }
+  void removeAll() {
+    _currentPrefs = PrefsState(isLoading: false,isError: false,isFirstOpen: true,isSignOut: true);
+    // This call tells the widgets that are listening to this model to rebuild.
+    notifyListeners();
+  }
 }
 
 class PrefsState {
