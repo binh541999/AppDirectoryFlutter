@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:redux_example/src/providers/GroupModel.dart';
 import 'package:redux_example/src/providers/MemberModel.dart';
 import 'package:redux_example/src/providers/StatusModel.dart';
 import 'package:redux_example/src/services/function/fetchDataintoDb.dart';
-import 'package:redux_example/src/models/i_post.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,7 +35,6 @@ Future<bool> fetchLogin(BuildContext context,String username,String password) as
     print('Log in Failed $error');
     Provider.of<StatusModel>(context, listen: false).isLoading = false;
     Provider.of<StatusModel>(context, listen: false).isError = true;
-    //store.dispatch(SetPostsStateAction(PostsState(isLoading: false,isError: true)));
     return false;
   }
 }
@@ -62,11 +61,11 @@ Future<bool> fetchGetContact(BuildContext context) async {
    // Future.wait([
     dispatchContact(jsonData['items']);
     //]).catchError((onError)=> print(onError));
-   await Provider.of<MemberModel>(context, listen: false).loadData();
+    await Provider.of<MemberModel>(context, listen: false).loadData();
+    await Provider.of<GroupModel>(context, listen: false).loadData();
     Provider.of<StatusModel>(context, listen: false).isLoading = false;
     Provider.of<StatusModel>(context, listen: false).isError = false;
     Provider.of<StatusModel>(context, listen: false).isFirstOpen = false;
-print('get contact done');
 return true;
     // print (jsonData['items'].where((item) => (item["employeeCode"].toString().contains(userCode))));
     //  await prefs.setStringList('userInfo',jsonData['items'].where((item) => (item["employeeCode"].toString().contains(userCode))));

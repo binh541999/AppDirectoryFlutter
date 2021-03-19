@@ -1,5 +1,7 @@
+import 'dart:async';
+import 'package:redux_example/src/models/Groups.dart';
 import 'package:redux_example/src/models/Member.dart';
-import 'package:redux_example/src/providers/MemberModel.dart';
+import 'package:redux_example/src/services/sqlLite/dboGroup.dart';
 import 'package:redux_example/src/services/sqlLite/dboMember.dart';
 
 Future<void> dispatchContact(List<dynamic> json){
@@ -24,8 +26,13 @@ Future<void> dispatchContact(List<dynamic> json){
           employeePicUrl: value["employeePicUrl"],
           fullName: value["fullName"],
         );
-        insertItem(member);
+        insertItemMember(member);
       };
+
+      for(int i = 0;i< 5 ; i ++){
+
+        insertItemGroup('Group Group $i');
+      }
 
     }
   }

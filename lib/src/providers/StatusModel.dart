@@ -1,19 +1,18 @@
-import 'dart:collection';
+
 import 'package:flutter/material.dart';
-import 'package:redux_example/src/models/Member.dart';
-import 'package:redux_example/src/services/sqlLite/dboMember.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class StatusModel with ChangeNotifier {
   PrefsState _currentPrefs = PrefsState(isLoading: false,isError: false,isFirstOpen: true,isSignOut: true);
 
-  DarkNotifier() {
+  StatusModel() {
     _loadStatus();
   }
 
   Future<void> _loadStatus() async {
     await SharedPreferences.getInstance().then((prefs) {
       bool statusFirstOpen = prefs.getBool('isFirstOpen') ?? true;
+      print('first Open load $statusFirstOpen');
       _currentPrefs = PrefsState(isFirstOpen: statusFirstOpen);
       bool statusSignOut = prefs.getBool('isSignOut') ?? true;
       _currentPrefs = PrefsState(isFirstOpen: statusSignOut);

@@ -11,7 +11,7 @@ class CustomContact extends StatefulWidget {
     @required this.employeeData,
   }) : super(key: key);
 
-  // final Map<String, dynamic> employeeData;
+
   final Member employeeData;
 
   @override
@@ -35,7 +35,6 @@ class _CustomContact extends State<CustomContact> {
   //   checkURL();
   // }
   void _onPressContact() {
-    print(widget.employeeData.mobilePhone);
     Navigator.push(
         context,
         MaterialPageRoute(

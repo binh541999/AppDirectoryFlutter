@@ -12,7 +12,7 @@ class LogIn extends StatefulWidget {
 
 // Define a corresponding State class.
 // This class holds the data related to the Form.
-class _LogIn extends State<LogIn> with AutomaticKeepAliveClientMixin {
+class _LogIn extends State<LogIn>  {
   // Create a text controller and use it to retrieve the current value
   // of the TextField.
   final password = TextEditingController();
@@ -25,8 +25,6 @@ class _LogIn extends State<LogIn> with AutomaticKeepAliveClientMixin {
     username.dispose();
     super.dispose();
   }
-  @override
-  bool get wantKeepAlive => true;
 
   void _onFetchPostsPressed(BuildContext context) async {
  await  fetchLogin(context, 'binhtatnguyen', 'T61b2541999').then((value) {

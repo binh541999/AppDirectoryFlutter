@@ -23,7 +23,7 @@ class MemberModel extends ChangeNotifier {
   }
 
   Future<void> loadData() async {
-    _members =  await selectAll();
+    _members =  await selectAllMember();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userCode = prefs.getString('userCode');
     print('_members $_members');
@@ -42,6 +42,7 @@ class MemberModel extends ChangeNotifier {
   void removeAll() {
     _members.clear();
     _userInfo.clear();
+    _searchString = '';
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();
   }

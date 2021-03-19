@@ -14,7 +14,7 @@ void populateDbGroup(Database db) async {
   );
 }
 
-Future<List<Groups>> selectAll() async {
+Future<List<Groups>> selectAllGroup() async {
   // Get a reference to the database.
   final db = await database;
 
@@ -32,21 +32,37 @@ Future<List<Groups>> selectAll() async {
   });
 }
 
-Future<void> insertItem(Groups groups) async {
+Future<void> insertItemGroup(String groupName) async {
   // Get a reference to the database.
   final db = await database;
   //print('insertItem');
   // Insert the Dog into the correct table. Also specify the
   // `conflictAlgorithm`. In this case, if the same dog is inserted
   // multiple times, it replaces the previous data.
-  await db.insert(
+  await db.rawInsert('INSERT INTO $TABLE_NAME(name) VALUES(?)', [groupName]);
+  // await db.insert(
+  //   'Groups',
+  //   groupName,
+  // );
+}
+
+Future<void> updateItemGroup(Groups groups) async {
+  // Get a reference to the database.
+  final db = await database;
+  //print('insertItem');
+  // Insert the Dog into the correct table. Also specify the
+  // `conflictAlgorithm`. In this case, if the same dog is inserted
+  // multiple times, it replaces the previous data.
+  await db.update(
     'Groups',
     groups.toMap(),
+    where: "id = ?",
+    whereArgs: [groups.id]
   );
 }
 
 
-Future<void> deleteData() async {
+Future<void> deleteDataGroup() async {
   // Get a reference to the database.
   final db = await database;
   //print('insertItem');

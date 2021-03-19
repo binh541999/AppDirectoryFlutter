@@ -15,7 +15,7 @@ void populateDbGroupMember(Database db) async {
   );
 }
 
-Future<List<GroupMember>> selectAll() async {
+Future<List<GroupMember>> selectAllGroupMember() async {
   // Get a reference to the database.
   final db = await database;
 
@@ -33,7 +33,7 @@ Future<List<GroupMember>> selectAll() async {
   });
 }
 
-Future<void> insertItem(GroupMember groupMember) async {
+Future<void> insertItemGroupMember(GroupMember groupMember) async {
   // Get a reference to the database.
   final db = await database;
   //print('insertItem');
@@ -47,7 +47,7 @@ Future<void> insertItem(GroupMember groupMember) async {
 }
 
 
-Future<void> deleteData() async {
+Future<void> deleteDataGroupMember() async {
   // Get a reference to the database.
   final db = await database;
   //print('insertItem');

@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:redux_example/src/Components/CustomChooseContact.dart';
 import 'package:redux_example/src/Components/CustomContact.dart';
 import 'package:redux_example/src/models/Member.dart';
 import 'package:redux_example/src/providers/MemberModel.dart';
 import 'package:redux_example/src/providers/StatusModel.dart';
 
-import '../Components/CustomContact.dart';
 
 
-class Contact extends StatefulWidget {
-  Contact({
+class AddMember extends StatefulWidget {
+  AddMember({
     Key key,
   }) : super(key: key);
 
   @override
-  _Contact createState() => _Contact();
+  _AddMember createState() => _AddMember();
 }
 
-class _Contact extends State<Contact> {
+class _AddMember extends State<AddMember> {
   var _controller = TextEditingController();
 
   @override
@@ -31,6 +31,10 @@ class _Contact extends State<Contact> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text('Add Member'),
+      ),
       body: Column(
         children: <Widget>[
           Padding(
@@ -44,7 +48,7 @@ class _Contact extends State<Contact> {
                   onPressed:(){
                     Provider.of<MemberModel>(context, listen: false)
                         .changeSearchString('');
-                  return _controller.clear();
+                    return _controller.clear();
                   } ,
                   icon: Icon(Icons.clear),
                 ),
@@ -62,11 +66,11 @@ class _Contact extends State<Contact> {
           ),
           Expanded(
             child:
-                Consumer<MemberModel>(builder: (context, membersData, child) {
-             // print(membersData.members.toString());
+            Consumer<MemberModel>(builder: (context, membersData, child) {
+              // print(membersData.members.toString());
               return ListView.builder(
                 itemCount: membersData.members.length,
-                itemBuilder: (BuildContext context, int index) => CustomContact(
+                itemBuilder: (BuildContext context, int index) => CustomChooseContact(
                   employeeData: membersData.members[index],
                   key: Key(membersData.members[index].employeeId.toString()),
                 ),

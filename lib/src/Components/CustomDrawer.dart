@@ -4,13 +4,22 @@ import 'package:provider/provider.dart';
 import 'package:redux_example/src/providers/MemberModel.dart';
 import 'package:redux_example/src/providers/StatusModel.dart';
 import 'package:redux_example/src/scenes/LogIn.dart';
+import 'package:redux_example/src/services/sqlLite/dboGroup.dart';
 import 'package:redux_example/src/services/sqlLite/dboMember.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
 class CustomDrawer extends StatelessWidget {
   static const String _title = 'Flutter Code Sample';
   Future<void> deleteDB(BuildContext context) async {
-    deleteData();
+    deleteDataMember();
+    deleteDataGroup() ;
+    //     var databasesPath = await getDatabasesPath();
+//     String path = join(databasesPath, 'directory_database.db');
+//
+// // Delete the database
+//     await deleteDatabase(path);
 
     Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (BuildContext context) => LogIn())).then((value){

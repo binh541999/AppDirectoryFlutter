@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux_example/src/models/i_post.dart';
+import 'package:redux_example/src/providers/GroupMemberModel.dart';
+import 'package:redux_example/src/providers/GroupModel.dart';
 import 'package:redux_example/src/providers/MemberModel.dart';
 import 'package:redux_example/src/providers/StatusModel.dart';
 import 'package:redux_example/src/scenes/LogIn.dart';
@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'src/navigations/index.dart';
 
 void main() async {
-
+final StatusModel status = StatusModel();
   runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -16,6 +16,12 @@ void main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => StatusModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => GroupModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => GroupMemberModel(),
         ),
       ],
       child: MyApp()
@@ -31,8 +37,10 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        initialRoute:Provider.of<StatusModel>(context).isFirstOpen ?
-        '/' : '/homePage',
+        initialRoute:
+        Provider.of<StatusModel>(context).isFirstOpen ?
+        '/' :
+        '/homePage',
         routes: {
           '/':(_)=> LogIn(),
           '/homePage':(_)=>RootNavigation()
