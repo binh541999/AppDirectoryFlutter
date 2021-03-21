@@ -5,10 +5,12 @@ import 'package:redux_example/src/providers/MemberModel.dart';
 import 'package:redux_example/src/providers/StatusModel.dart';
 import 'package:redux_example/src/scenes/LogIn.dart';
 import 'package:provider/provider.dart';
+import 'package:redux_example/src/scenes/Splash.dart';
 import 'src/navigations/index.dart';
 
 void main() async {
-final StatusModel status = StatusModel();
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -30,20 +32,20 @@ final StatusModel status = StatusModel();
 
 class MyApp extends StatelessWidget {
 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        initialRoute:
-        Provider.of<StatusModel>(context).isFirstOpen ?
-        '/' :
-        '/homePage',
+        initialRoute: '/splash',
+        // Provider.of<StatusModel>(context).isFirstOpen ?
+        // '/' :
+        // '/homePage',
         routes: {
           '/':(_)=> LogIn(),
-          '/homePage':(_)=>RootNavigation()
+          '/homePage':(_)=>RootNavigation(),
+          '/splash':(_)=>SplashScreen()
         },
         // home:
         //   RootNavigation(),

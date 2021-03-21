@@ -12,7 +12,7 @@ class LogIn extends StatefulWidget {
 
 // Define a corresponding State class.
 // This class holds the data related to the Form.
-class _LogIn extends State<LogIn>  {
+class _LogIn extends State<LogIn> {
   // Create a text controller and use it to retrieve the current value
   // of the TextField.
   final password = TextEditingController();
@@ -27,26 +27,19 @@ class _LogIn extends State<LogIn>  {
   }
 
   void _onFetchPostsPressed(BuildContext context) async {
- await  fetchLogin(context, 'binhtatnguyen', 'T61b2541999').then((value) {
-   print(value);
-   if(value)
-       // Navigator.pushReplacementNamed(context, '/homePage');
-     SchedulerBinding.instance.addPostFrameCallback((_) {
-       Navigator.pushReplacement(context,
-           MaterialPageRoute(builder: (BuildContext context) => RootNavigation()));
-     });
-   // Navigator.pushReplacement(context,
-   //     MaterialPageRoute(builder: (BuildContext context) => RootNavigation()));
- }).catchError((value) => print(value));
-
-
-    // Provider.of<MemberModel>(context, listen: false).loadData();
-
-
-    //
-
-    // Provider.of<MemberModel>(context, listen: false).loadUserInfo();
-    // Provider.of<MemberModel>(context, listen: false).loadUserInfo();
+    await fetchLogin(context, 'binhtatnguyen', 'T61b2541999').then((value) {
+      print(value);
+      if (value)
+        // Navigator.pushReplacementNamed(context, '/homePage');
+        SchedulerBinding.instance.addPostFrameCallback((_) {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                  builder: (BuildContext context) => RootNavigation()));
+        });
+      // Navigator.pushReplacement(context,
+      //     MaterialPageRoute(builder: (BuildContext context) => RootNavigation()));
+    }).catchError((value) => print(value));
   }
 
   @override
@@ -86,13 +79,15 @@ class _LogIn extends State<LogIn>  {
                             children: [
                               Text("Log in"),
                               SizedBox(
-                                width: (MediaQuery. of(context). size. width)/3.2,
+                                width:
+                                    (MediaQuery.of(context).size.width) / 3.2,
                               ),
                               Consumer<StatusModel>(
                                   builder: (context, statusData, child) {
                                 if (statusData.isLoading) {
                                   return Padding(
-                                    padding: const EdgeInsets.only(left: 10,right: 10),
+                                    padding: const EdgeInsets.only(
+                                        left: 10, right: 10),
                                     child: SizedBox(
                                         height: 20,
                                         width: 20,
@@ -105,7 +100,6 @@ class _LogIn extends State<LogIn>  {
                                   );
                                 }
                               }),
-
                             ])),
                     fillColor: Colors.grey,
                     onPressed: () =>
@@ -113,17 +107,15 @@ class _LogIn extends State<LogIn>  {
                         //testPress,
                         _onFetchPostsPressed(context),
                   ),
-                  Consumer<StatusModel>(
-                      builder: (context, statusData, child) {
-                        if (statusData.isError) {
-                          return Text("Failed to get posts");
-                        } else {
-                          return SizedBox.shrink();
-                        }
-                      }),
+                  Consumer<StatusModel>(builder: (context, statusData, child) {
+                    if (statusData.isError) {
+                      return Text("Failed to get posts");
+                    } else {
+                      return SizedBox.shrink();
+                    }
+                  }),
                 ])),
       ),
-
     );
   }
 }
