@@ -28,12 +28,6 @@ class StatusModel with ChangeNotifier {
     });
   }
 
-  Future<void> _saveSignOut() async {
-    await SharedPreferences.getInstance().then((prefs) {
-      prefs.setBool('isSignOut', _currentPrefs.isSignOut);
-    });
-  }
-
   bool get isLoading => _currentPrefs.isLoading;
   bool get isFirstOpen => _currentPrefs.isFirstOpen;
   bool get isError => _currentPrefs.isError;
@@ -54,12 +48,6 @@ class StatusModel with ChangeNotifier {
     _currentPrefs = PrefsState(isFirstOpen: newValue);
     notifyListeners();
     _saveFirstOpen();
-  }
-  set isSignOut(bool newValue) {
-    if (newValue == _currentPrefs.isSignOut) return;
-    _currentPrefs = PrefsState(isSignOut: newValue);
-    notifyListeners();
-    _saveSignOut();
   }
 
   void removeAll() {

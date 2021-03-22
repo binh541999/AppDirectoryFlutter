@@ -6,26 +6,9 @@ import 'package:redux_example/src/providers/GroupModel.dart';
 
 customCreateGroup(BuildContext context) {
   final groupName = TextEditingController();
-
+  final _formKey = GlobalKey<FormState>();
+  bool _validate = false;
   // set up the buttons
-  Widget cancelButton = RawMaterialButton(
-    splashColor: Colors.blue,
-    fillColor: Colors.blueAccent,
-    child: Text(
-      "Cancel",
-      style: TextStyle(color: Colors.white),
-    ),
-    onPressed: () {},
-  );
-  Widget continueButton = RawMaterialButton(
-    splashColor: Colors.blue,
-    fillColor: Colors.blueAccent,
-    child: Text(
-      "Save",
-      style: TextStyle(color: Colors.white),
-    ),
-    onPressed: () {},
-  );
 
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
@@ -33,13 +16,23 @@ customCreateGroup(BuildContext context) {
       "Create Group",
       textAlign: TextAlign.center,
     ),
-    content: TextField(
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
-        border: OutlineInputBorder(),
-        labelText: 'Group name',
+    content: Form(
+      key: _formKey,
+      child: TextFormField(
+        validator: (value){
+          if(_validate)
+            return 'Name isn\'t valid';
+          else return null;
+        },
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+          border: OutlineInputBorder(),
+          labelText: 'Group name',
+
+          errorText: _validate ? 'Name isn\'t valid' : null,
+        ),
+        controller: groupName,
       ),
-      controller: groupName,
     ),
     actions: [
       Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: <Widget>[
@@ -57,7 +50,6 @@ customCreateGroup(BuildContext context) {
         Consumer<GroupModel>(
           builder: (context, groupsData, child) {
             return RawMaterialButton(
-              
               splashColor: Colors.blue,
               fillColor: Colors.blueAccent,
               child: Text(
@@ -65,20 +57,28 @@ customCreateGroup(BuildContext context) {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
+                print('validate $_validate');
                 groupsData.groups.forEach((element) {
-                  if(element.id ==  groupsData.groups.last.id && element.name != groupName.text )
-                    {
-                      var group = new Groups(
-                          id:groupsData.groups[groupsData.groups.length-1].id +1,
-                          name:groupName.text
-                      );
-
-                      groupsData.addGroup(group);
-                      Navigator.of(context, rootNavigator: true).pop();
-                    }
-
+                   if( element.name == groupName.text) {
+                     _validate = true;
+                  }
                 });
+                print('validate 2 $_validate');
+                if(!_validate){
+                  _validate = false;
 
+                  var group = new Groups(
+                      id: groupsData.groups[groupsData.groups.length - 1].id +
+                          1,
+                      name: groupName.text);
+                  groupsData.addGroup(group);
+                  Navigator.of(context, rootNavigator: true).pop();
+                }
+                else {
+                  _formKey.currentState.validate();
+                  _validate = false;
+                };
+                print('validate 3 $_validate');
               },
             );
           },

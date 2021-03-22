@@ -11,8 +11,9 @@ import 'package:redux_example/src/providers/StatusModel.dart';
 class AddMember extends StatefulWidget {
   AddMember({
     Key key,
+    @required this.idCurrentGroup
   }) : super(key: key);
-
+ final int idCurrentGroup;
   @override
   _AddMember createState() => _AddMember();
 }
@@ -72,6 +73,7 @@ class _AddMember extends State<AddMember> {
                 itemCount: membersData.members.length,
                 itemBuilder: (BuildContext context, int index) => CustomChooseContact(
                   employeeData: membersData.members[index],
+                    idCurrentGroup : widget.idCurrentGroup,
                   key: Key(membersData.members[index].employeeId.toString()),
                 ),
                 //children: _buildPosts(posts),

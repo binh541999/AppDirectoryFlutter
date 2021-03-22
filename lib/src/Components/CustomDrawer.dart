@@ -1,10 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:redux_example/src/providers/GroupMemberModel.dart';
+import 'package:redux_example/src/providers/GroupModel.dart';
 import 'package:redux_example/src/providers/MemberModel.dart';
 import 'package:redux_example/src/providers/StatusModel.dart';
 import 'package:redux_example/src/scenes/LogIn.dart';
 import 'package:redux_example/src/services/sqlLite/dboGroup.dart';
+import 'package:redux_example/src/services/sqlLite/dboGroupMember.dart';
 import 'package:redux_example/src/services/sqlLite/dboMember.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -15,6 +18,7 @@ class CustomDrawer extends StatelessWidget {
   Future<void> deleteDB(BuildContext context) async {
     deleteDataMember();
     deleteDataGroup() ;
+    deleteDataGroupMember();
     //     var databasesPath = await getDatabasesPath();
 //     String path = join(databasesPath, 'directory_database.db');
 //
@@ -26,12 +30,12 @@ class CustomDrawer extends StatelessWidget {
 
       Provider.of<StatusModel>(context, listen: false).removeAll();
       Provider.of<MemberModel>(context, listen: false).removeAll();
+      Provider.of<GroupModel>(context, listen: false).removeAll();
+      Provider.of<GroupMemberModel>(context, listen: false).removeAll();
     });
       //Navigator.pushNamed(context, '/');
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.clear();
-
-
 
   }
 

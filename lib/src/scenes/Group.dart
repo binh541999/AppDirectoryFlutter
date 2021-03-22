@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:redux_example/src/Components/CustomButtonAddMember.dart';
+
+import 'package:redux_example/src/Components/CustomContact.dart';
 import 'package:redux_example/src/Components/CustomCreateGroup.dart';
 import 'package:redux_example/src/Components/CustomGroupAvatar.dart';
+import 'package:redux_example/src/models/GroupMember.dart';
 import 'package:redux_example/src/models/Groups.dart';
+import 'package:redux_example/src/models/Member.dart';
+import 'package:redux_example/src/providers/GroupMemberModel.dart';
 import 'package:redux_example/src/providers/GroupModel.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:redux_example/src/providers/MemberModel.dart';
 import 'package:redux_example/src/scenes/AddMemberToGroup.dart';
 
 class Group extends StatefulWidget {
@@ -18,81 +23,129 @@ class Group extends StatefulWidget {
 }
 
 class _MyGroupPageState extends State<Group> {
-  Groups currentGroup = new Groups();
+  List<Member> groupMembers = [];
+
   @override
   void initState() {
+    // Provider.of<GroupMemberModel>(context, listen: false).changeIDGroup(
+    //   Provider.of<GroupModel>(context, listen: false).currentGroup.id
+    // );
+
     super.initState();
   }
+
   void _onPressAddMember() {
     Navigator.of(context).push(MaterialPageRoute(
       // we'll look at ColorDetailPage later
-      builder: (context) => AddMember(),
+      builder: (context) =>
+          AddMember(
+            idCurrentGroup:
+            Provider
+                .of<GroupModel>(context, listen: false)
+                .currentGroup
+                .id,
+          ),
     ));
   }
 
   @override
   Widget build(BuildContext context) {
+    var members = Provider
+        .of<MemberModel>(context, listen: false)
+        .members;
     return Scaffold(
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top:8.0),
+            padding: const EdgeInsets.only(top: 8.0),
             child: Container(
               height: 100,
               child: Row(
                 children: [
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.75,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.75,
                     child: Consumer<GroupModel>(
                         builder: (context, groupsData, child) {
-                          print(groupsData.currentGroup.name);
-                      return ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        itemCount: groupsData.groups.length,
-                        itemBuilder: (BuildContext context, int index) =>
-                            CustomGroupAvatar(
-                              currentGroupID: groupsData.currentGroup.id,
-                          groupData: groupsData.groups[index],
-                          key: Key(groupsData.groups[index].id.toString()),
-                        ),
-                        //children: _buildPosts(posts),
-                      );
-                    }),
+                          return Consumer<GroupMemberModel>(
+                              builder: (context, membersData, child) {
+                                return ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    shrinkWrap: true,
+                                    itemCount: groupsData.groups.length,
+                                    itemBuilder: (BuildContext context,
+                                        int index) {
+                                      List<String> imageLists = [];
+                                      var test = members.where((member) {
+                                        var temp = membersData.groupMems.indexWhere((
+                                            element) =>
+                                        element.idMember == member.employeeId &&
+                                            element.idGroup ==
+                                                groupsData.groups[index].id);
+                                        return temp > -1 ? true : false;
+                                      }).toList();
+                                      for (int i = 0; i < 3; i++) {
+                                        if (test.isNotEmpty) {
+                                          if (i < test.length) {
+                                            imageLists.add(
+                                                test[i].employeePicUrl);
+                                            continue;
+                                          }
+                                          imageLists.add('');
+                                        }
+                                      }
+                                      return CustomGroupAvatar(
+                                        currentGroupID: groupsData.currentGroup
+                                            .id,
+                                        imageList: imageLists,
+                                        groupData: groupsData.groups[index],
+                                        key: Key(
+                                            groupsData.groups[index].id
+                                                .toString()),
+                                      );
+                                    }
+                                  //children: _buildPosts(posts),
+                                );
+
+                              }
+                          );
+                        }),
                   ),
                   Expanded(
                       child: Column(
-                    children: [
-                      Container(
-                          height: 70,
-                          width: 70,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
+                        children: [
+                          Container(
+                              height: 70,
+                              width: 70,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: ClipOval(
+                                clipBehavior: Clip.antiAlias,
+                                child: FloatingActionButton(
+                                    heroTag: 'btnAddGroup',
+                                    tooltip: 'Add new group',
+                                    backgroundColor: Colors.blueAccent,
+                                    foregroundColor: Colors.white,
+                                    elevation: 0,
+                                    onPressed: () {
+                                      customCreateGroup(context);
+                                    },
+                                    child: Icon(Icons.add)),
+                              )),
+                          Flexible(
+                            child: RichText(
+                              overflow: TextOverflow.ellipsis,
+                              strutStyle: StrutStyle(fontSize: 16.0),
+                              text: TextSpan(
+                                  style: TextStyle(color: Colors.black),
+                                  text: 'New Group'),
+                            ),
                           ),
-                          child: ClipOval(
-                            clipBehavior: Clip.antiAlias,
-                            child: FloatingActionButton(
-                                heroTag: 'btnAddGroup',
-                                tooltip: 'Add new group',
-                                backgroundColor: Colors.blueAccent,
-                                foregroundColor: Colors.white,
-                                elevation: 0,
-                                onPressed: () {
-                                  customCreateGroup(context);
-                                },
-                                child: Icon(Icons.add)),
-                          )),
-                      Flexible(
-                        child: RichText(
-                          overflow: TextOverflow.ellipsis,
-                          strutStyle: StrutStyle(fontSize: 16.0),
-                          text: TextSpan(
-                              style: TextStyle(color: Colors.black),
-                              text: 'New Group'),
-                        ),
-                      ),
-                    ],
-                  ))
+                        ],
+                      ))
                 ],
               ),
             ),
@@ -122,27 +175,55 @@ class _MyGroupPageState extends State<Group> {
                     onPressed: () => print('Add group'),
                     child: Icon(Icons.mail)),
                 FloatingActionButton(
-                    heroTag: 'btnAddMem',
-                    tooltip: 'Add mem group',
-                    backgroundColor: Colors.blueAccent,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    child: FaIcon(FontAwesomeIcons.userCheck,size: 18),
-                    onPressed: () => _onPressAddMember(),
-                    // {
-                    //   Navigator.push(
-                    //       context,
-                    //     new  MaterialPageRoute(
-                    //         builder: (BuildContext context) =>
-                    //             AddMember(),
-                    //       ));
-                    // },
-
-
+                  heroTag: 'btnAddMem',
+                  tooltip: 'Add mem group',
+                  backgroundColor: Colors.blueAccent,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  child: FaIcon(FontAwesomeIcons.userCheck, size: 18),
+                  onPressed: () => _onPressAddMember(),
+                  // {
+                  //   Navigator.push(
+                  //       context,
+                  //     new  MaterialPageRoute(
+                  //         builder: (BuildContext context) =>
+                  //             AddMember(),
+                  //       ));
+                  // },
                 ),
               ],
             ),
-          )
+          ),
+          Expanded(
+            child: Consumer<GroupMemberModel>(
+                builder: (context, membersData, child) {
+                  if (membersData.currentGroupMembers.isNotEmpty) {
+                    // print('member ID group ${membersData.groupMems.last.idMember}');
+                    //var members =  Provider.of<MemberModel>(context, listen: false).members;
+                    var test = members.where((member) {
+                      var index = membersData.currentGroupMembers.indexWhere(
+                              (element) =>
+                          element.idMember == member.employeeId);
+                      // var index = notes.indexWhere((element) =>
+                      // element == member.employeeId);
+                      return index > -1 ? true : false;
+                    }).toList();
+                    return ListView.builder(
+                      itemCount: test.length,
+                      itemBuilder: (BuildContext context, int index) =>
+                          CustomContact(
+                            employeeData: test[index],
+                            key: Key(test[index].employeeId.toString()),
+                          ),
+                      //children: _buildPosts(posts),
+                    );
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text('Don\'t have member yet'),
+                  );
+                }),
+          ),
         ],
       ),
     );

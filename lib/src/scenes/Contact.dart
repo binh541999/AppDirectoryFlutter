@@ -26,6 +26,11 @@ class _Contact extends State<Contact> {
     super.initState();
   }
 
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
 
   @override

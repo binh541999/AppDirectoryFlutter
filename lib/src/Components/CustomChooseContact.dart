@@ -1,17 +1,24 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:redux_example/src/models/GroupMember.dart';
+import 'package:redux_example/src/models/Groups.dart';
+import 'package:redux_example/src/providers/GroupMemberModel.dart';
 import 'package:redux_example/src/scenes/ContactDetail.dart';
 import 'package:redux_example/src/models/Member.dart';
+import 'package:redux_example/src/scenes/Group.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomChooseContact extends StatefulWidget {
   CustomChooseContact({
     Key key,
     @required this.employeeData,
+    @required this.idCurrentGroup,
   }) : super(key: key);
 
   final Member employeeData;
+  final int idCurrentGroup;
 
   @override
   _CustomChooseContact createState() => _CustomChooseContact();
@@ -21,22 +28,43 @@ class _CustomChooseContact extends State<CustomChooseContact> {
   String imageUrl = '';
   bool _isSelected = false;
 
-  // void checkURL() async{
-  //   if (await canLaunch(widget.employeeData['employeePicUrl']))
-  //   {
-  //     print('can access');
-  //     imageUrl = widget.employeeData['employeePicUrl'];
-  //   }
-  // }
-  //
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   checkURL();
-  // }
+  void checkChecked() {
+    var members =  Provider.of<GroupMemberModel>(context, listen: false).currentGroupMembers;
+    var index = members.indexWhere(
+            (element) => element.idMember == widget.employeeData.employeeId);
+    // var index = notes.indexWhere((element) =>
+    // element == member.employeeId);
+   if(index > -1 )
+      _isSelected = true;
+
+  }
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkChecked();
+
+  }
   void _onPressContact() {
     setState(() {
       _isSelected = !_isSelected;
+      print('select ted $_isSelected');
+      if(_isSelected) {
+        var newGroupMember = new GroupMember(
+          idGroup:  widget.idCurrentGroup,
+          idMember: widget.employeeData.employeeId
+        );
+        Provider.of<GroupMemberModel>(context, listen: false).addGroupMember(
+            newGroupMember);
+      }
+      else {
+        var newGroupMember = new GroupMember(
+            idGroup:  widget.idCurrentGroup,
+            idMember: widget.employeeData.employeeId
+        );
+        Provider.of<GroupMemberModel>(context, listen: false).deleteGroupMember(
+            newGroupMember);
+      }
+
     });
   }
 

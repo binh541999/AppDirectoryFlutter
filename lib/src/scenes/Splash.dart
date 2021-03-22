@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
+import 'package:redux_example/src/providers/GroupMemberModel.dart';
 import 'package:redux_example/src/providers/GroupModel.dart';
 import 'package:redux_example/src/providers/MemberModel.dart';
 import 'package:redux_example/src/providers/StatusModel.dart';
@@ -27,8 +28,8 @@ class _SplashScreen extends State<SplashScreen> {
      SharedPreferences prefs = await SharedPreferences.getInstance();
      bool statusFirstOpen = prefs.getBool('isFirstOpen') ?? true;
      if(statusFirstOpen) {
-       print('Login ');
-       print(Provider.of<StatusModel>(context).isFirstOpen);
+       // print('Login ');
+       // print(Provider.of<StatusModel>(context).isFirstOpen);
       startTimeForLogin();
     } else
       await navigationHomePage(context);
@@ -55,6 +56,10 @@ class _SplashScreen extends State<SplashScreen> {
   Future<void> navigationHomePage( BuildContext context) async {
    await Provider.of<MemberModel>(context, listen: false).loadData();
    await Provider.of<GroupModel>(context, listen: false).loadData();
+   await Provider.of<GroupMemberModel>(context, listen: false).loadData();
+   Provider.of<GroupMemberModel>(context, listen: false).changeIDGroup(
+       Provider.of<GroupModel>(context, listen: false).currentGroup.id
+   );
         // Navigator.pushReplacementNamed(context, '/homePage');
     Navigator.of(context).pushReplacementNamed('/homePage');
       // Navigator.pushReplacement(context,
@@ -73,11 +78,7 @@ class _SplashScreen extends State<SplashScreen> {
             padding: const EdgeInsets.only(left: 10, right: 10),
             child: SizedBox(
                 height: 20, width: 20,
-                child: Column(children:[
-                  CircularProgressIndicator(),
-                  Text('Loading Contact'),
-                ]
-                ),
+                child: CircularProgressIndicator(),
           ),
         ),
       ),

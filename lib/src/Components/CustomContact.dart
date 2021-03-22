@@ -104,16 +104,19 @@ class _CustomContact extends State<CustomContact> {
                     alignment: Alignment.centerRight,
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
-                      child: FloatingActionButton(
-                          heroTag: widget.employeeData.mobilePhone,
-                          tooltip: 'Call',
-                          backgroundColor: Colors.transparent,
-                          foregroundColor: Colors.black,
-                          elevation: 0,
+                      child: IconButton(
+                          // heroTag: widget.employeeData.mobilePhone,
+                          // tooltip: 'Call',
+                          // backgroundColor: Colors.transparent,
+                          // foregroundColor: Colors.black,
+                          // elevation: 0,
+                        icon: Icon(Icons.phone),
                           onPressed: () =>
                               launch('tel:${widget.employeeData.mobilePhone}'),
-                          child: Icon(Icons.phone)),
-                    )),
+                          //child: Icon(Icons.phone)),
+                    ),
+                    ),
+              ),
               ),
             ],
           ),
