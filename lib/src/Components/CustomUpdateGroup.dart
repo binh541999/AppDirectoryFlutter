@@ -4,8 +4,8 @@ import 'package:provider/provider.dart';
 import 'package:redux_example/src/models/Groups.dart';
 import 'package:redux_example/src/providers/GroupModel.dart';
 
-customCreateGroup(BuildContext context) {
-  final groupName = TextEditingController();
+customUpdateGroup(BuildContext context, Groups groupData) {
+  final newName = TextEditingController(text: groupData.name);
   final _formKey = GlobalKey<FormState>();
   bool _validate = false;
   // set up the buttons
@@ -19,19 +19,19 @@ customCreateGroup(BuildContext context) {
     content: Form(
       key: _formKey,
       child: TextFormField(
-        validator: (value){
-          if(_validate)
+        validator: (value) {
+          if (_validate)
             return 'Name isn\'t valid';
-          else return null;
+          else
+            return null;
         },
         decoration: InputDecoration(
           contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
           border: OutlineInputBorder(),
           labelText: 'Group name',
-
           errorText: _validate ? 'Name isn\'t valid' : null,
         ),
-        controller: groupName,
+        controller: newName,
       ),
     ),
     actions: [
@@ -57,36 +57,27 @@ customCreateGroup(BuildContext context) {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                print('validate $_validate');
-                groupsData.groups.forEach((element) {
-                   if( element.name == groupName.text) {
-                     _validate = true;
+                //groupsData.groups.forEach((element) {
+                for (final element in groupsData.groups) {
+                  if (element.name == newName.text &&
+                      newName.text != groupData.name) {
+                    _validate = true;
+                    break;
                   }
-                });
-                print('validate 2 $_validate');
-                if(!_validate){
-                  _validate = false;
-
-                  if(groupsData.groups.length >0) {
-                    var group = new Groups(
-                        id: groupsData.groups[groupsData.groups.length - 1].id +
-                            1,
-                        name: groupName.text);
-                    groupsData.addGroup(group);
-                  }
-                  else {
-                    var group = new Groups(
-                        id: 0,
-                        name: groupName.text);
-                    groupsData.addGroup(group);
-                  }
-                  Navigator.of(context, rootNavigator: true).pop();
                 }
-                else {
+                ;
+                if (!_validate) {
+                  _validate = false;
+                  var group = new Groups(
+                      id: groupData.id,
+                      name: newName.text);
+                  groupsData.updateGroup(group);
+                  Navigator.of(context, rootNavigator: true).pop();
+                } else {
                   _formKey.currentState.validate();
                   _validate = false;
-                };
-                print('validate 3 $_validate');
+                }
+                ;
               },
             );
           },

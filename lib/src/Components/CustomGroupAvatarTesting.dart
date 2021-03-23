@@ -9,8 +9,8 @@ import 'package:redux_example/src/providers/GroupMemberModel.dart';
 import 'package:redux_example/src/providers/GroupModel.dart';
 import 'package:redux_example/src/providers/MemberModel.dart';
 
-class CustomGroupAvatar extends StatefulWidget {
-  CustomGroupAvatar({
+class CustomGroupAvatarTest extends StatefulWidget {
+  CustomGroupAvatarTest({
     Key key,
     @required this.groupData,
     @required this.currentGroupID,
@@ -26,7 +26,7 @@ class CustomGroupAvatar extends StatefulWidget {
   _CustomGroupAvatar createState() => _CustomGroupAvatar();
 }
 
-class _CustomGroupAvatar extends State<CustomGroupAvatar> {
+class _CustomGroupAvatar extends State<CustomGroupAvatarTest> {
   String imageUrl = '';
   bool isVisible = false;
 

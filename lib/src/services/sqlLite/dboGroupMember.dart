@@ -68,6 +68,20 @@ Future<void> deleteItemGroupMember(GroupMember groupMember) async {
   print('inserted2: $test');
 }
 
+Future<void> deleteItemGroupMemberWithGroupID(int  groupID) async {
+  // Get a reference to the database.
+  final db = await database;
+  //print('insertItem');
+  // Insert the Dog into the correct table. Also specify the
+  // `conflictAlgorithm`. In this case, if the same dog is inserted
+  // multiple times, it replaces the previous data.
+  int test = await db.delete(
+      TABLE_NAME,
+      where: 'idGroup = ? ',
+      whereArgs: [groupID]
+
+  );
+}
 
 
 Future<void> deleteDataGroupMember() async {

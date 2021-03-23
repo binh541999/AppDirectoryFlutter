@@ -43,6 +43,14 @@ class GroupMemberModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void deleteGroupMemberWithGroupId(int groupID)  {
+    if(_groupMems.length ==0) return ;
+    _groupMems.removeWhere((member) =>
+        member.idGroup == groupID);
+    deleteItemGroupMemberWithGroupID(groupID);
+    notifyListeners();
+  }
+
   void removeAll() {
     _groupMems.clear();
     _currentGroupMembers.clear();

@@ -28,6 +28,27 @@ class GroupModel extends ChangeNotifier {
   }
 
 
+  void deleteGroup(int groupID) {
+    if(_groups.length != 0) {
+    //  _groups.removeWhere((group) => group.id == groupID);
+      _groups.removeWhere((group) {
+        return group.id == groupID;
+      });
+      deleteItemGroup(groupID);
+      notifyListeners();
+    }
+  }
+
+  void updateGroup(Groups group) {
+    if(_groups.length != 0) {
+      //  _groups.removeWhere((group) => group.id == groupID);
+      var index  = _groups.indexWhere((element) => element.id == group.id);
+      _groups[index].name = group.name;
+      updateItemGroup(group);
+      notifyListeners();
+    }
+  }
+
   void addGroup(Groups group) {
     _groups.add(group);
     insertItemGroup(group.name);

@@ -53,11 +53,27 @@ Future<void> updateItemGroup(Groups groups) async {
   // Insert the Dog into the correct table. Also specify the
   // `conflictAlgorithm`. In this case, if the same dog is inserted
   // multiple times, it replaces the previous data.
-  await db.update(
-    'Groups',
-    groups.toMap(),
-    where: "id = ?",
-    whereArgs: [groups.id]
+  await db.rawUpdate('UPDATE $TABLE_NAME SET name =  ? WHERE id = ?', [groups.name,groups.id]);
+  // await db.update(
+  //   'Groups',
+  //   groups.toMap(),
+  //   where: "id = ?",
+  //   whereArgs: [groups.id]
+  // );
+}
+
+Future<void> deleteItemGroup(int groupID) async {
+  // Get a reference to the database.
+  final db = await database;
+  //print('insertItem');
+  // Insert the Dog into the correct table. Also specify the
+  // `conflictAlgorithm`. In this case, if the same dog is inserted
+  // multiple times, it replaces the previous data.
+  await db.delete(
+      TABLE_NAME,
+      where: 'id = ?',
+      whereArgs: [groupID]
+
   );
 }
 
