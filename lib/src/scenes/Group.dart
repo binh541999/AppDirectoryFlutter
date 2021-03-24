@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:provider/provider.dart';
 
 import 'package:redux_example/src/Components/CustomContact.dart';
 import 'package:redux_example/src/Components/CustomCreateGroup.dart';
 import 'package:redux_example/src/Components/CustomGroupAvatar.dart';
-import 'package:redux_example/src/Components/CustomGroupAvatarTesting.dart';
 import 'package:redux_example/src/Components/CustomUpdateGroup.dart';
 import 'package:redux_example/src/models/GroupMember.dart';
 import 'package:redux_example/src/models/Groups.dart';
@@ -14,6 +14,7 @@ import 'package:redux_example/src/providers/GroupModel.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:redux_example/src/providers/MemberModel.dart';
 import 'package:redux_example/src/scenes/AddMemberToGroup.dart';
+import 'package:telephony/telephony.dart';
 
 class Group extends StatefulWidget {
   Group({
@@ -27,6 +28,7 @@ class Group extends StatefulWidget {
 class _MyGroupPageState extends State<Group> {
   List<Member> groupMembers = [];
   bool isVisible = false;
+
   @override
   void initState() {
     // Provider.of<GroupMemberModel>(context, listen: false).changeIDGroup(
@@ -51,9 +53,9 @@ class _MyGroupPageState extends State<Group> {
     var members = Provider.of<MemberModel>(context, listen: false).members;
     return Scaffold(
       body: GestureDetector(
-        onTap: (){
+        onTap: () {
           setState(() {
-            isVisible=false;
+            isVisible = false;
           });
         },
         child: Column(
@@ -70,6 +72,7 @@ class _MyGroupPageState extends State<Group> {
                           builder: (context, groupsData, child) {
                         return Consumer<GroupMemberModel>(
                             builder: (context, membersData, child) {
+                          groupsData.groups.reversed;
                           return ListView.builder(
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
@@ -79,7 +82,8 @@ class _MyGroupPageState extends State<Group> {
                                 var test = members.where((member) {
                                   var temp = membersData.groupMems.indexWhere(
                                       (element) =>
-                                          element.idMember == member.employeeId &&
+                                          element.idMember ==
+                                              member.employeeId &&
                                           element.idGroup ==
                                               groupsData.groups[index].id);
                                   return temp > -1 ? true : false;
@@ -100,10 +104,10 @@ class _MyGroupPageState extends State<Group> {
                                         splashColor: Colors.transparent,
                                         highlightColor: Colors.transparent,
                                         onPressed: () {
-                                          Provider.of<GroupModel>(context, listen: false)
-                                              .currentGroup = groupsData.groups[index];
-                                          Provider.of<GroupMemberModel>(context, listen: false)
-                                              .changeIDGroup(groupsData.groups[index].id);
+                                          groupsData.currentGroup =
+                                              groupsData.groups[index];
+                                          membersData.changeIDGroup(
+                                              groupsData.groups[index].id);
                                         },
                                         onLongPress: () {
                                           setState(() {
@@ -124,24 +128,32 @@ class _MyGroupPageState extends State<Group> {
                                           height: 20,
                                           width: 70,
                                           child: RawMaterialButton(
-                                            fillColor: !isVisible ? null : Colors.grey,
+                                            fillColor:
+                                                !isVisible ? null : Colors.grey,
                                             splashColor: Colors.transparent,
                                             highlightColor: Colors.transparent,
                                             shape: new StadiumBorder(),
                                             onPressed: () => isVisible
-                                                ? customUpdateGroup(context, groupsData.groups[index])
+                                                ? customUpdateGroup(context,
+                                                    groupsData.groups[index])
                                                 : null,
                                             child: RichText(
                                               textAlign: TextAlign.center,
                                               overflow: TextOverflow.ellipsis,
-                                              strutStyle: StrutStyle(fontSize: 16.0),
+                                              strutStyle:
+                                                  StrutStyle(fontSize: 16.0),
                                               text: TextSpan(
                                                   style: TextStyle(
-                                                      color:
-                                                      groupsData.currentGroup.id == groupsData.groups[index].id
+                                                      color: groupsData
+                                                                  .currentGroup
+                                                                  .id ==
+                                                              groupsData
+                                                                  .groups[index]
+                                                                  .id
                                                           ? Colors.blueAccent
                                                           : Colors.black),
-                                                  text: groupsData.groups[index].name),
+                                                  text: groupsData
+                                                      .groups[index].name),
                                             ),
                                           ),
                                         ),
@@ -166,16 +178,31 @@ class _MyGroupPageState extends State<Group> {
                                               ),
                                             ),
                                             child: FloatingActionButton(
-                                                heroTag: groupsData.groups[index].id,
+                                                heroTag:
+                                                    groupsData.groups[index].id,
                                                 backgroundColor: Colors.grey,
                                                 foregroundColor: Colors.white,
                                                 elevation: 0,
                                                 onPressed: () {
-                                                  Provider.of<GroupMemberModel>(context, listen: false)
+                                                  Provider.of<GroupMemberModel>(
+                                                          context,
+                                                          listen: false)
                                                       .deleteGroupMemberWithGroupId(
-                                                      groupsData.groups[index].id);
-                                                  Provider.of<GroupModel>(context, listen: false)
-                                                      .deleteGroup(groupsData.groups[index].id);
+                                                          groupsData
+                                                              .groups[index]
+                                                              .id);
+                                                  Provider.of<GroupModel>(
+                                                          context,
+                                                          listen: false)
+                                                      .deleteGroup(groupsData
+                                                          .groups[index].id);
+                                                  if (groupsData
+                                                          .groups?.isEmpty ??
+                                                      false) {
+                                                    setState(() {
+                                                      isVisible = false;
+                                                    });
+                                                  }
                                                 },
                                                 child: Icon(Icons.clear)),
                                           ),
@@ -241,39 +268,91 @@ class _MyGroupPageState extends State<Group> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  FloatingActionButton(
-                      heroTag: 'btnMessageGroup',
-                      tooltip: 'Message group',
-                      backgroundColor: Colors.blueAccent,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      disabledElevation: 0,
-                      onPressed: () => print('Add group'),
-                      child: Icon(Icons.message)),
-                  FloatingActionButton(
-                      heroTag: 'btnMailGroup',
-                      tooltip: 'Mail group',
-                      backgroundColor: Colors.blueAccent,
-                      foregroundColor: Colors.white,
-                      elevation: 0,
-                      onPressed: () => print('Add group'),
-                      child: Icon(Icons.mail)),
-                  FloatingActionButton(
-                    heroTag: 'btnAddMem',
-                    tooltip: 'Add mem group',
-                    backgroundColor: Colors.blueAccent,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    child: FaIcon(FontAwesomeIcons.userCheck, size: 18),
-                    onPressed: () => _onPressAddMember(),
-                    // {
-                    //   Navigator.push(
-                    //       context,
-                    //     new  MaterialPageRoute(
-                    //         builder: (BuildContext context) =>
-                    //             AddMember(),
-                    //       ));
-                    // },
+                  Consumer<GroupMemberModel>(
+                      builder: (context, membersData, child) {
+                    bool isEmptyMember =
+                        membersData.currentGroupMembers?.isEmpty ?? false;
+                    var test;
+                    String contactNumbers = '';
+                    List<String> contactEmails = [];
+                    if (isEmptyMember) {
+                      test = members.where((member) {
+                        var index = membersData.currentGroupMembers.indexWhere(
+                            (element) => element.idMember == member.employeeId);
+                        return index > -1 ? true : false;
+                      }).toList();
+                      contactNumbers = '';
+                      contactEmails = [];
+                      test.forEach((element) {
+                        contactNumbers += '${element.mobilePhone};';
+                        contactEmails.add(element.email);
+                      });
+                    }
+
+                    return Container(
+                      width: MediaQuery.of(context).size.width / 3 * 2,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          FloatingActionButton(
+                              heroTag: 'btnMessageGroup',
+                              tooltip: 'Message group',
+                              splashColor:
+                                  isEmptyMember ? Colors.transparent : null,
+                              backgroundColor: Colors.blueAccent,
+                              foregroundColor:
+                                  isEmptyMember ? Colors.grey : Colors.white,
+                              elevation: 0,
+                              disabledElevation: 0,
+                              onPressed: () async {
+                                Telephony telephony = Telephony.instance;
+                                final bool result = await telephony
+                                    .requestPhoneAndSmsPermissions;
+                                await telephony.sendSmsByDefaultApp(
+                                    to: contactNumbers.toString(),
+                                    message: "May the force be with you!");
+                              },
+                              child: Icon(Icons.message)),
+                          FloatingActionButton(
+                              heroTag: 'btnMailGroup',
+                              tooltip: 'Mail group',
+                              splashColor:
+                                  isEmptyMember ? Colors.transparent : null,
+                              backgroundColor: Colors.blueAccent,
+                              foregroundColor:
+                                  isEmptyMember ? Colors.grey : Colors.white,
+                              elevation: 0,
+                              onPressed: () async {
+                                final Email email = Email(
+                                  recipients: contactEmails,
+                                  isHTML: false,
+                                );
+
+                                await FlutterEmailSender.send(email);
+                              },
+                              child: Icon(Icons.mail)),
+                        ],
+                      ),
+                    );
+                  }),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 3,
+                    child: Consumer<GroupModel>(
+                        builder: (context, groupsData, child) {
+                      bool isEmptyGroup = groupsData.groups?.isEmpty ?? false;
+
+                      return FloatingActionButton(
+                        heroTag: 'btnAddMem',
+                        tooltip: 'Add mem group',
+                        splashColor: isEmptyGroup ? Colors.transparent : null,
+                        backgroundColor: Colors.blueAccent,
+                        foregroundColor:
+                            isEmptyGroup ? Colors.grey : Colors.white,
+                        elevation: 0,
+                        child: FaIcon(FontAwesomeIcons.userCheck, size: 18),
+                        onPressed: () => _onPressAddMember(),
+                      );
+                    }),
                   ),
                 ],
               ),
@@ -281,14 +360,14 @@ class _MyGroupPageState extends State<Group> {
             Expanded(
               child: Consumer<GroupMemberModel>(
                   builder: (context, membersData, child) {
-                if (membersData.currentGroupMembers.length > 0) {
-                  //print('member ID group ${membersData.groupMems.last.idMember}');
-                  //var members =  Provider.of<MemberModel>(context, listen: false).members;
+                if (membersData.currentGroupMembers?.isNotEmpty ?? false) {
+                  // print(membersData.idGroup);
+                  membersData.groupMems.forEach((element) {print(element.idMember);});
+                   membersData.currentGroupMembers.forEach((element) {print(element.idMember);});
+
                   var test = members.where((member) {
                     var index = membersData.currentGroupMembers.indexWhere(
                         (element) => element.idMember == member.employeeId);
-                    // var index = notes.indexWhere((element) =>
-                    // element == member.employeeId);
                     return index > -1 ? true : false;
                   }).toList();
                   return ListView.builder(
@@ -298,7 +377,6 @@ class _MyGroupPageState extends State<Group> {
                       employeeData: test[index],
                       key: Key(test[index].employeeId.toString()),
                     ),
-                    //children: _buildPosts(posts),
                   );
                 }
                 return Padding(

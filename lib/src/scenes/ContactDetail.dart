@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:redux_example/src/models/Member.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -32,7 +33,7 @@ class ContactDetail extends StatelessWidget {
       //
       // await ContactsService.addContact(newContact);
       //
-      // await ContactsService.openContactForm();
+       await ContactsService.openContactForm();
     } else {
       print('not granted');
     }
@@ -72,17 +73,6 @@ class ContactDetail extends StatelessWidget {
                                 errorWidget: (context, url, error) => Image.asset(
                                     'lib/src/assets/Image/avatarDefault.png'),
                               )
-                              // Image.network(
-                              //   employeeData.employeePicUrl,
-                              //   height: 100,
-                              //   alignment: Alignment.topCenter,
-                              //   fit: BoxFit.fitWidth,
-                              //   errorBuilder: (BuildContext context,
-                              //       Object exception, StackTrace stackTrace) {
-                              //     return Image.asset(
-                              //         'lib/src/assets/Image/avatarDefault.png');
-                              //   },
-                              // ),
                               ),
                         ),
                         SizedBox(

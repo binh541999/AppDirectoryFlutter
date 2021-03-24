@@ -5,65 +5,43 @@ import 'package:provider/provider.dart';
 import 'package:redux_example/src/models/GroupMember.dart';
 import 'package:redux_example/src/models/Groups.dart';
 import 'package:redux_example/src/providers/GroupMemberModel.dart';
+import 'package:redux_example/src/providers/MemberModel.dart';
 import 'package:redux_example/src/scenes/ContactDetail.dart';
 import 'package:redux_example/src/models/Member.dart';
 import 'package:redux_example/src/scenes/Group.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class CustomChooseContact extends StatefulWidget {
-  CustomChooseContact({
+class CustomChooseContactBeforeCreateGroup extends StatefulWidget {
+  CustomChooseContactBeforeCreateGroup({
     Key key,
     @required this.employeeData,
-    @required this.idCurrentGroup,
   }) : super(key: key);
 
   final Member employeeData;
-  final int idCurrentGroup;
 
   @override
   _CustomChooseContact createState() => _CustomChooseContact();
 }
 
-class _CustomChooseContact extends State<CustomChooseContact> {
+class _CustomChooseContact extends State<CustomChooseContactBeforeCreateGroup> {
   String imageUrl = '';
   bool _isSelected = false;
 
-  void checkChecked() {
-    var members =  Provider.of<GroupMemberModel>(context, listen: false).currentGroupMembers;
-    var index = members.indexWhere(
-            (element) => element.idMember == widget.employeeData.employeeId);
-    // var index = notes.indexWhere((element) =>
-    // element == member.employeeId);
-   if(index > -1 )
-      _isSelected = true;
-
-  }
   void initState() {
     // TODO: implement initState
     super.initState();
-    checkChecked();
-
   }
+
   void _onPressContact() {
     setState(() {
       _isSelected = !_isSelected;
-      if(_isSelected) {
-        var newGroupMember = new GroupMember(
-          idGroup:  widget.idCurrentGroup,
-          idMember: widget.employeeData.employeeId
-        );
-        Provider.of<GroupMemberModel>(context, listen: false).addGroupMember(
-            newGroupMember);
+      if (_isSelected) {
+        Provider.of<MemberModel>(context, listen: false)
+            .addTempMember(widget.employeeData);
+      } else {
+        Provider.of<MemberModel>(context, listen: false)
+            .removeTempMember(widget.employeeData);
       }
-      else {
-        var newGroupMember = new GroupMember(
-            idGroup:  widget.idCurrentGroup,
-            idMember: widget.employeeData.employeeId
-        );
-        Provider.of<GroupMemberModel>(context, listen: false).deleteGroupMember(
-            newGroupMember);
-      }
-
     });
   }
 
@@ -79,7 +57,7 @@ class _CustomChooseContact extends State<CustomChooseContact> {
               Expanded(
                 child: RawMaterialButton(
                     splashColor: Colors.grey,
-                    onPressed:() {
+                    onPressed: () {
                       _onPressContact();
                     },
                     child: Row(
@@ -126,18 +104,28 @@ class _CustomChooseContact extends State<CustomChooseContact> {
                         SizedBox(
                           width: 50.0,
                           child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Padding(
+                              alignment: Alignment.centerRight,
+                              child: Padding(
                                 padding: const EdgeInsets.all(10.0),
-                                child: Checkbox(
-                                  value: _isSelected,
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      _isSelected = newValue;
-                                    });
-                                  },
-                                )),
-                          ),
+                                child: Consumer<MemberModel>(
+                                    builder: (context, membersData, child) {
+                                  var isSelected = false;
+                                  var temp = membersData.tempMembers.indexWhere(
+                                      (element) =>
+                                          element.employeeId ==
+                                          widget.employeeData.employeeId);
+                                  if (temp > -1) {
+                                    print(temp);
+                                    isSelected = true;
+                                  }
+                                  return Checkbox(
+                                    value: isSelected,
+                                    onChanged: (newValue) {
+                                      print(isSelected);
+                                    },
+                                  );
+                                }),
+                              )),
                         ),
                       ],
                     )),

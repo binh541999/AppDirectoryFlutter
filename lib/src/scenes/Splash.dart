@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
+import 'package:redux_example/src/navigations/index.dart';
 import 'package:redux_example/src/providers/GroupMemberModel.dart';
 import 'package:redux_example/src/providers/GroupModel.dart';
 import 'package:redux_example/src/providers/MemberModel.dart';
@@ -28,12 +29,14 @@ class _SplashScreen extends State<SplashScreen> {
      SharedPreferences prefs = await SharedPreferences.getInstance();
      bool statusFirstOpen = prefs.getBool('isFirstOpen') ?? true;
      if(statusFirstOpen) {
-       // print('Login ');
+        print('Login ');
        // print(Provider.of<StatusModel>(context).isFirstOpen);
       startTimeForLogin();
-    } else
+    } else {
+       print('navigation ');
       await navigationHomePage(context);
-   }
+    }
+  }
 
 
   void initState() {
@@ -41,13 +44,9 @@ class _SplashScreen extends State<SplashScreen> {
     // if(Provider.of<StatusModel>(context).isFirstOpen)
     //   startTimeForLogin();
     // else startTimeForHomePage();
-    //navigation();
-  }
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
     navigation();
   }
+
 
   void navigationLogin() {
     Navigator.of(context).pushReplacementNamed('/');
@@ -61,9 +60,11 @@ class _SplashScreen extends State<SplashScreen> {
        Provider.of<GroupModel>(context, listen: false).currentGroup.id
    );
         // Navigator.pushReplacementNamed(context, '/homePage');
-    Navigator.of(context).pushReplacementNamed('/homePage');
-      // Navigator.pushReplacement(context,
-      //     MaterialPageRoute(builder: (BuildContext context) => RootNavigation()));
+    //Navigator.of(context).pushReplacementNamed('/homePage');
+      Navigator.pushAndRemoveUntil(context,
+          MaterialPageRoute(builder: (BuildContext context) => RootNavigation()),
+        ModalRoute.withName('/homePage'),
+      );
 
    // Navigator.of(context).pushReplacementNamed('/homePage');
   }

@@ -32,10 +32,12 @@ class _LogIn extends State<LogIn> {
       if (value)
         // Navigator.pushReplacementNamed(context, '/homePage');
         SchedulerBinding.instance.addPostFrameCallback((_) {
-          Navigator.pushReplacement(
+          Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
-                  builder: (BuildContext context) => RootNavigation()));
+                  builder: (BuildContext context) => RootNavigation()),
+            ModalRoute.withName('/homePage'),
+          );
         });
       // Navigator.pushReplacement(context,
       //     MaterialPageRoute(builder: (BuildContext context) => RootNavigation()));

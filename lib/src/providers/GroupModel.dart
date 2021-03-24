@@ -14,7 +14,9 @@ class GroupModel extends ChangeNotifier {
   Groups get currentGroup => _currentGroup;
 
   Future<void> loadData() async {
-    _groups =  await selectAllGroup();
+    _groups =  ((await selectAllGroup()).reversed).toList();
+
+   // _groups = _groups.reversed;
     if(_groups.length != 0)
       _currentGroup = _groups[0];
     // print('_members $_members');
@@ -50,7 +52,7 @@ class GroupModel extends ChangeNotifier {
   }
 
   void addGroup(Groups group) {
-    _groups.add(group);
+    _groups.insert(0,group);
     insertItemGroup(group.name);
     notifyListeners();
   }

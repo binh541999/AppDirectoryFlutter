@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class MemberModel extends ChangeNotifier {
   String _searchString = "";
   List<Member> _members= [];
+  List<Member> _tempMembers= [];
   List<Member> _userInfo = [];
 
   UnmodifiableListView<Member> get members => _searchString.isEmpty
@@ -15,10 +16,10 @@ class MemberModel extends ChangeNotifier {
       _members.where((member) => member.shortName.toLowerCase().contains(_searchString)).toList());
 
   UnmodifiableListView<Member> get userInfo => UnmodifiableListView(_userInfo);
+  UnmodifiableListView<Member> get tempMembers => UnmodifiableListView(_tempMembers);
 
   void changeSearchString(String searchString) {
     _searchString = searchString;
-    //print(_searchString);
     notifyListeners();
   }
 
@@ -36,6 +37,23 @@ class MemberModel extends ChangeNotifier {
 
   void addMember(Member member) {
     _members.add(member);
+    notifyListeners();
+  }
+
+  void removeTempMember(Member member) {
+    _tempMembers.add(member);
+    _tempMembers.removeWhere((tempMember) =>
+    tempMember.employeeId == member.employeeId);
+    notifyListeners();
+  }
+
+  void addTempMember(Member member) {
+    _tempMembers.add(member);
+    notifyListeners();
+  }
+
+  void removeAllTempMember() {
+    _tempMembers.clear();
     notifyListeners();
   }
 

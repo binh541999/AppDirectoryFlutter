@@ -43,9 +43,10 @@ class MyApp extends StatelessWidget {
         // '/' :
         // '/homePage',
         routes: {
+          '/splash':(_)=>SplashScreen(),
           '/':(_)=> LogIn(),
           '/homePage':(_)=>RootNavigation(),
-          '/splash':(_)=>SplashScreen()
+
         },
         // home:
         //   RootNavigation(),

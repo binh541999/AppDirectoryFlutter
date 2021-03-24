@@ -10,6 +10,7 @@ class GroupMemberModel extends ChangeNotifier {
   List<GroupMember> _groupMems = [];
   List<GroupMember> _currentGroupMembers = [];
 
+  int get idGroup => _idGroup;
   UnmodifiableListView<GroupMember> get groupMems => UnmodifiableListView(_groupMems);
   UnmodifiableListView<GroupMember> get currentGroupMembers => _idGroup == -1
       ? null
@@ -18,9 +19,6 @@ class GroupMemberModel extends ChangeNotifier {
 
   Future<void> loadData() async {
     _groupMems = await selectAllGroupMember();
-
-    //if (_groupMems.length != 0) _idGroup = _groupMems[0].idGroup;
-    // print('_members $_members');
     notifyListeners();
   }
 
@@ -30,6 +28,8 @@ class GroupMemberModel extends ChangeNotifier {
   }
 
   void addGroupMember(GroupMember groupMember) {
+    print(groupMember.idGroup);
+    print(groupMember.idMember);
     _groupMems.add(groupMember);
     insertItemGroupMember(groupMember);
     notifyListeners();

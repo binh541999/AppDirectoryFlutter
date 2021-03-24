@@ -29,10 +29,6 @@ Future<void> dispatchContact(List<dynamic> json){
         insertItemMember(member);
       };
 
-      for(int i = 0;i< 5 ; i ++){
-
-        insertItemGroup('Group Group $i');
-      }
 
     }
   }
