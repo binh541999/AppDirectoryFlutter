@@ -61,6 +61,7 @@ class MemberModel extends ChangeNotifier {
     _members.clear();
     _userInfo.clear();
     _searchString = '';
+    print('clear member');
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();
   }

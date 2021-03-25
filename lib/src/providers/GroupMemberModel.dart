@@ -55,6 +55,7 @@ class GroupMemberModel extends ChangeNotifier {
     _groupMems.clear();
     _currentGroupMembers.clear();
     _idGroup = -1;
+    print('clear group member');
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();
   }

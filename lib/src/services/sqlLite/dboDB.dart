@@ -26,3 +26,9 @@ void _createDb(Database db) {
   populateDbGroup(db);
   populateDbGroupMember(db);
 }
+
+void _deleteDb() async {
+  var databasesPath = await getDatabasesPath();
+  String path = join(databasesPath, DB_NAME);
+  await deleteDatabase(path);
+}

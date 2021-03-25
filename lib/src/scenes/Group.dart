@@ -211,15 +211,7 @@ class _MyGroupPageState extends State<Group> {
                                     ),
                                   ],
                                 );
-                                //   CustomGroupAvatar(
-                                //   currentGroupID: groupsData.currentGroup.id,
-                                //   imageList: imageLists,
-                                //   groupData: groupsData.groups[index],
-                                //   key:
-                                //       Key(groupsData.groups[index].id.toString()),
-                                // );
                               }
-                              //children: _buildPosts(posts),
                               );
                         });
                       }),
@@ -271,11 +263,13 @@ class _MyGroupPageState extends State<Group> {
                   Consumer<GroupMemberModel>(
                       builder: (context, membersData, child) {
                     bool isEmptyMember =
-                        membersData.currentGroupMembers?.isEmpty ?? false;
+                        membersData.currentGroupMembers?.isEmpty ?? true;
+                    print(membersData.currentGroupMembers);
+                    print(isEmptyMember);
                     var test;
                     String contactNumbers = '';
                     List<String> contactEmails = [];
-                    if (isEmptyMember) {
+                    if (!isEmptyMember) {
                       test = members.where((member) {
                         var index = membersData.currentGroupMembers.indexWhere(
                             (element) => element.idMember == member.employeeId);
@@ -310,7 +304,7 @@ class _MyGroupPageState extends State<Group> {
                                     .requestPhoneAndSmsPermissions;
                                 await telephony.sendSmsByDefaultApp(
                                     to: contactNumbers.toString(),
-                                    message: "May the force be with you!");
+                                    message: "");
                               },
                               child: Icon(Icons.message)),
                           FloatingActionButton(
@@ -360,16 +354,21 @@ class _MyGroupPageState extends State<Group> {
             Expanded(
               child: Consumer<GroupMemberModel>(
                   builder: (context, membersData, child) {
-                if (membersData.currentGroupMembers?.isNotEmpty ?? false) {
+                    // membersData.groupMems.forEach((element) {print(element.idMember);
+                    // print(element.idGroup);
+                    // });
+                    //membersData.currentGroupMembers.forEach((element) {print(element.idMember);});
+                    print(membersData.idGroup);
+                if (membersData.currentGroupMembers != null) {
                   // print(membersData.idGroup);
-                  membersData.groupMems.forEach((element) {print(element.idMember);});
-                   membersData.currentGroupMembers.forEach((element) {print(element.idMember);});
+
 
                   var test = members.where((member) {
                     var index = membersData.currentGroupMembers.indexWhere(
                         (element) => element.idMember == member.employeeId);
                     return index > -1 ? true : false;
                   }).toList();
+                 test.forEach((element) {print(element.empVietnameseName);});
                   return ListView.builder(
                     itemCount: test.length,
                     itemBuilder: (BuildContext context, int index) =>

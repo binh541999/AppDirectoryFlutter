@@ -11,8 +11,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<bool> fetchLogin(BuildContext context,String username,String password) async {
   Provider.of<StatusModel>(context, listen: false).isLoading = true;
   try {
+    
     final response = await http.post(
-        Uri.parse('https://home.kms-technology.com/api/Account/login'),
+       // Uri.parse('https://home.kms-technology.com/api/Account/login'),
+        Uri.parse('http://125.212.208.58:8000/api/auth/login'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -47,7 +49,9 @@ Future<bool> fetchGetContact(BuildContext context) async {
   try {
     final response = await http.get(
         Uri.parse(
-            'https://hr.kms-technology.com/api/Contact/ReturnContactList/0/0'),
+            //'https://hr.kms-technology.com/api/Contact/ReturnContactList/0/0'
+            'http://localhost:8000/api/employees?page=0&items=0'
+        ),
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

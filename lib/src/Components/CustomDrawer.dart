@@ -19,25 +19,17 @@ class CustomDrawer extends StatelessWidget {
     deleteDataMember();
     deleteDataGroup();
     deleteDataGroupMember();
-    //     var databasesPath = await getDatabasesPath();
-//     String path = join(databasesPath, 'directory_database.db');
-//
-// // Delete the database
-//     await deleteDatabase(path);
+
     Provider.of<StatusModel>(context, listen: false).removeAll();
     Provider.of<GroupModel>(context, listen: false).removeAll();
     Provider.of<GroupMemberModel>(context, listen: false).removeAll();
-    Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (BuildContext context) => LogIn()))
-        .then((value) {
-
-
-      Provider.of<MemberModel>(context, listen: false).removeAll();
-
-    });
+    await Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (BuildContext context) => LogIn()));
     //Navigator.pushNamed(context, '/');
+    Provider.of<MemberModel>(context, listen: false).removeAll();
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.clear();
+
   }
 
   @override

@@ -71,7 +71,6 @@ customCreateGroup(BuildContext context) {
                               .changeIDGroup(groupsData.groups[0].id);
                           var members= Provider.of<MemberModel>(context, listen: false).tempMembers;
                           if(members?.isNotEmpty ?? false){
-                            print('add Member');
                             print(members.length);
                             members.forEach((element) {
                               print(element);

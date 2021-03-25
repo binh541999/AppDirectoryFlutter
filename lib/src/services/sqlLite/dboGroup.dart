@@ -8,7 +8,7 @@ const String TABLE_NAME = "Groups";
 
 void populateDbGroup(Database db) async {
   await db.execute(
-    """CREATE TABLE $TABLE_NAME(    id INTEGER PRIMARY KEY AUTOINCREMENT,                                      
+    """CREATE TABLE $TABLE_NAME(    id INTEGER PRIMARY KEY ,                                      
                                      name VARCHAR(255) 
             )""",
   );
@@ -32,18 +32,19 @@ Future<List<Groups>> selectAllGroup() async {
   });
 }
 
-Future<void> insertItemGroup(String groupName) async {
+Future<void> insertItemGroup(Groups groups) async {
   // Get a reference to the database.
   final db = await database;
   //print('insertItem');
   // Insert the Dog into the correct table. Also specify the
   // `conflictAlgorithm`. In this case, if the same dog is inserted
   // multiple times, it replaces the previous data.
-  await db.rawInsert('INSERT INTO $TABLE_NAME(name) VALUES(?)', [groupName]);
+ await db.rawInsert('INSERT INTO $TABLE_NAME(id,name) VALUES(?,?)', [groups.id,groups.name]);
   // await db.insert(
   //   'Groups',
   //   groupName,
   // );
+
 }
 
 Future<void> updateItemGroup(Groups groups) async {

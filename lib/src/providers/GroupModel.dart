@@ -53,7 +53,7 @@ class GroupModel extends ChangeNotifier {
 
   void addGroup(Groups group) {
     _groups.insert(0,group);
-    insertItemGroup(group.name);
+    insertItemGroup(group);
     notifyListeners();
   }
 

@@ -52,6 +52,7 @@ class StatusModel with ChangeNotifier {
 
   void removeAll() {
     _currentPrefs = PrefsState(isLoading: false,isError: false,isFirstOpen: true,isSignOut: true);
+    print('clear status');
     // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();
   }
