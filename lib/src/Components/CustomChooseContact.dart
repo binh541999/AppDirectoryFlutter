@@ -31,7 +31,7 @@ class _CustomChooseContact extends State<CustomChooseContact> {
   void checkChecked() {
     var members =  Provider.of<GroupMemberModel>(context, listen: false).currentGroupMembers;
     var index = members.indexWhere(
-            (element) => element.idMember == widget.employeeData.employeeId);
+            (element) => element.userName == widget.employeeData.userName);
     // var index = notes.indexWhere((element) =>
     // element == member.employeeId);
    if(index > -1 )
@@ -50,7 +50,7 @@ class _CustomChooseContact extends State<CustomChooseContact> {
       if(_isSelected) {
         var newGroupMember = new GroupMember(
           idGroup:  widget.idCurrentGroup,
-          idMember: widget.employeeData.employeeId
+            userName: widget.employeeData.userName
         );
         Provider.of<GroupMemberModel>(context, listen: false).addGroupMember(
             newGroupMember);
@@ -58,7 +58,7 @@ class _CustomChooseContact extends State<CustomChooseContact> {
       else {
         var newGroupMember = new GroupMember(
             idGroup:  widget.idCurrentGroup,
-            idMember: widget.employeeData.employeeId
+            userName: widget.employeeData.userName
         );
         Provider.of<GroupMemberModel>(context, listen: false).deleteGroupMember(
             newGroupMember);

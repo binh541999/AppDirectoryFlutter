@@ -77,7 +77,7 @@ customCreateGroup(BuildContext context) {
                               Provider.of<GroupMemberModel>(context, listen: false).addGroupMember(
                                   new GroupMember(
                                     idGroup : groupsData.groups[0].id,
-                                    idMember: element.employeeId,
+                                    userName: element.userName,
                                   )
                               );
                             });
@@ -98,7 +98,7 @@ customCreateGroup(BuildContext context) {
                               Provider.of<GroupMemberModel>(context, listen: false).addGroupMember(
                                   new GroupMember(
                                     idGroup : groupsData.groups[0].id,
-                                    idMember: element.employeeId,
+                                    userName: element.userName,
                                   )
                               );
                             });

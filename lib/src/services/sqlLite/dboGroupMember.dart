@@ -10,7 +10,7 @@ void populateDbGroupMember(Database db) async {
   await db.execute(
     """CREATE TABLE $TABLE_NAME(   id INTEGER PRIMARY KEY AUTOINCREMENT,
                                         idGroup INTEGER , 
-                                         idMember INTEGER 
+                                         userName VARCHAR(255)  
             )""",
   );
 }
@@ -28,15 +28,13 @@ Future<List<GroupMember>> selectAllGroupMember() async {
     return
       GroupMember(
         idGroup: maps[i]['idGroup'],
-        idMember: maps[i]['idMember'],
-
+        userName: maps[i]['userName'],
       );
   });
 }
 
 Future<void> insertItemGroupMember(GroupMember groupMember) async {
   // Get a reference to the database.
-  print('insert db ${groupMember.idGroup}');
   final db = await database;
   //print('insertItem');
   // Insert the Dog into the correct table. Also specify the
@@ -49,7 +47,6 @@ Future<void> insertItemGroupMember(GroupMember groupMember) async {
     'GroupMember',
     groupMember.toMap(),
   );
-  print('inserted2: $test');
 }
 
 Future<void> deleteItemGroupMember(GroupMember groupMember) async {
@@ -61,11 +58,10 @@ Future<void> deleteItemGroupMember(GroupMember groupMember) async {
   // multiple times, it replaces the previous data.
   int test = await db.delete(
     TABLE_NAME,
-    where: 'idGroup = ? AND idMember = ?',
-    whereArgs: [groupMember.idGroup,groupMember.idMember]
+    where: 'idGroup = ? AND userName = ?',
+    whereArgs: [groupMember.idGroup,groupMember.userName]
 
   );
-  print('inserted2: $test');
 }
 
 Future<void> deleteItemGroupMemberWithGroupID(int  groupID) async {

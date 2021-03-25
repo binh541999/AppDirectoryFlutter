@@ -1,25 +1,25 @@
 
 class GroupMember {
   int idGroup;
-  int idMember;
+  String userName;
 
   GroupMember({
     this.idGroup,
-    this.idMember,
+    this.userName,
   });
 
   @override
-  List<Object> get props => [idGroup, idMember];
+  List<Object> get props => [idGroup, userName];
   Map<String, dynamic> toMap() {
     return Map<String, dynamic>()
       ..["idGroup"] = idGroup
-      ..["idMember"] = idMember
+      ..["idMember"] = userName
     ;
   }
   static GroupMember formJson(Map<String, dynamic> json) {
     return GroupMember()
       ..idGroup = json["idGroup"]
-      ..idMember = json["idMember"];
+      ..userName = json["idMember"];
   }
 
 }

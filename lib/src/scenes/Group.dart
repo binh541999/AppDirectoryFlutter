@@ -82,8 +82,8 @@ class _MyGroupPageState extends State<Group> {
                                 var test = members.where((member) {
                                   var temp = membersData.groupMems.indexWhere(
                                       (element) =>
-                                          element.idMember ==
-                                              member.employeeId &&
+                                          element.userName ==
+                                              member.userName &&
                                           element.idGroup ==
                                               groupsData.groups[index].id);
                                   return temp > -1 ? true : false;
@@ -272,7 +272,7 @@ class _MyGroupPageState extends State<Group> {
                     if (!isEmptyMember) {
                       test = members.where((member) {
                         var index = membersData.currentGroupMembers.indexWhere(
-                            (element) => element.idMember == member.employeeId);
+                            (element) => element.userName == member.userName);
                         return index > -1 ? true : false;
                       }).toList();
                       contactNumbers = '';
@@ -365,7 +365,7 @@ class _MyGroupPageState extends State<Group> {
 
                   var test = members.where((member) {
                     var index = membersData.currentGroupMembers.indexWhere(
-                        (element) => element.idMember == member.employeeId);
+                        (element) => element.userName == member.userName);
                     return index > -1 ? true : false;
                   }).toList();
                  test.forEach((element) {print(element.empVietnameseName);});

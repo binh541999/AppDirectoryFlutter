@@ -27,9 +27,7 @@ class MemberModel extends ChangeNotifier {
     _members =  await selectAllMember();
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String userCode = prefs.getString('userCode');
-    print('_members $_members');
     _userInfo = _members.where((i) => i.employeeCode == userCode).toList();
-    print('_userinfo $_userInfo');
    // print('_members $_members');
     notifyListeners();
   }

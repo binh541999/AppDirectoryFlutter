@@ -28,8 +28,6 @@ class GroupMemberModel extends ChangeNotifier {
   }
 
   void addGroupMember(GroupMember groupMember) {
-    print(groupMember.idGroup);
-    print(groupMember.idMember);
     _groupMems.add(groupMember);
     insertItemGroupMember(groupMember);
     notifyListeners();
@@ -37,7 +35,7 @@ class GroupMemberModel extends ChangeNotifier {
 
   void deleteGroupMember(GroupMember groupMember) {
     _groupMems.removeWhere((member) =>
-        member.idMember == groupMember.idMember &&
+        member.userName == groupMember.userName &&
         member.idGroup == groupMember.idGroup);
     deleteItemGroupMember(groupMember);
     notifyListeners();

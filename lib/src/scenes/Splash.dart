@@ -8,8 +8,6 @@ import 'package:redux_example/src/navigations/index.dart';
 import 'package:redux_example/src/providers/GroupMemberModel.dart';
 import 'package:redux_example/src/providers/GroupModel.dart';
 import 'package:redux_example/src/providers/MemberModel.dart';
-import 'package:redux_example/src/providers/StatusModel.dart';
-import 'package:redux_example/src/services/api/fetchData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -29,11 +27,9 @@ class _SplashScreen extends State<SplashScreen> {
      SharedPreferences prefs = await SharedPreferences.getInstance();
      bool statusFirstOpen = prefs.getBool('isFirstOpen') ?? true;
      if(statusFirstOpen) {
-        print('Login ');
        // print(Provider.of<StatusModel>(context).isFirstOpen);
       startTimeForLogin();
     } else {
-       print('navigation ');
       await navigationHomePage(context);
     }
   }

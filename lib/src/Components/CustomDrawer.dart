@@ -23,12 +23,13 @@ class CustomDrawer extends StatelessWidget {
     Provider.of<StatusModel>(context, listen: false).removeAll();
     Provider.of<GroupModel>(context, listen: false).removeAll();
     Provider.of<GroupMemberModel>(context, listen: false).removeAll();
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.clear();
     await Navigator.pushReplacement(context,
             MaterialPageRoute(builder: (BuildContext context) => LogIn()));
     //Navigator.pushNamed(context, '/');
     Provider.of<MemberModel>(context, listen: false).removeAll();
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.clear();
+
 
   }
 
