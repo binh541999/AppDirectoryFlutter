@@ -13,13 +13,27 @@ class GroupModel extends ChangeNotifier {
   UnmodifiableListView<Groups> get groups => UnmodifiableListView(_groups);
   Groups get currentGroup => _currentGroup;
 
+  void loadDataJson(List<dynamic> json) {
+    try {
+      if (json != null) {
+        for (final value in json) {
+          //print('value $json');
+          var group = new Groups(
+            id: value['group_id'],
+            name: value['group_name'],
+          );
+          _groups.insert(0,group);
+        }
+      }
+    } catch (error) {
+      print('fetch data group Failed $error');
+    }
+  }
+
   Future<void> loadData() async {
     _groups =  ((await selectAllGroup()).reversed).toList();
-
-   // _groups = _groups.reversed;
     if(_groups.length != 0)
       _currentGroup = _groups[0];
-    // print('_members $_members');
     notifyListeners();
   }
 

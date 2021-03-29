@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:redux_example/src/models/MemberUsernameOnly.dart';
 import 'package:redux_example/src/scenes/ContactDetail.dart';
 import 'package:redux_example/src/models/Member.dart';
-import 'package:redux_example/src/services/api/fetchData.dart';
+import 'file:///D:/FlutterProject/AppDirectoryFlutter/lib/src/services/api/memberApi/fetchData.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CustomContact extends StatefulWidget {
@@ -40,15 +40,7 @@ class _CustomContact extends State<CustomContact> {
   //   checkURL();
   // }
   void _onPressContact() {
-    List<MemberUsernameOnly> members = [];
-    members.add(new MemberUsernameOnly( username: 'abhisheknema'));
-    members.add(new MemberUsernameOnly( username: 'binhtatnguyen'));
-    ListMemberUsernameOnly listmember = ListMemberUsernameOnly(members);
-    List jsonList = List();
-    members.map((item) => jsonList.add(item.toJson())).toList();
-    print(jsonList);
-    //print(json.encoder.convert(listmember));
-    fetchPostGroup(context, 'groupName', jsonList);
+
     Navigator.push(
         context,
         MaterialPageRoute(

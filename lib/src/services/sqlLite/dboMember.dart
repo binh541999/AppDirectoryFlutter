@@ -56,25 +56,28 @@ Future<List<Member>> selectAllMember() async {
 Future<void> insertItemMember(Member member) async {
   // Get a reference to the database.
   final db = await database;
-  //print('insertItem');
-  // Insert the Dog into the correct table. Also specify the
-  // `conflictAlgorithm`. In this case, if the same dog is inserted
-  // multiple times, it replaces the previous data.
-  await db.insert(
+
+  await db.transaction((txn) async {
+    var batch = txn.batch();
+    batch.insert(
     'Members',
     member.toMap(),
-  );
+    );
+    await batch.commit();
+  });
+
 }
 
 
 Future<void> deleteDataMember() async {
   // Get a reference to the database.
   final db = await database;
-  //print('insertItem');
-  // Insert the Dog into the correct table. Also specify the
-  // `conflictAlgorithm`. In this case, if the same dog is inserted
-  // multiple times, it replaces the previous data.
-  await db.delete(
-    'Members'
-  );
+
+  await db.transaction((txn) async {
+    var batch = txn.batch();
+    batch.delete(
+        'Members'
+    );
+    await batch.commit();
+  });
 }

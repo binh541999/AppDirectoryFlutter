@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
+import 'package:redux_example/src/Components/CustomChooseGroup.dart';
 import 'package:redux_example/src/models/Member.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -301,7 +302,9 @@ class ContactDetail extends StatelessWidget {
                 child: RawMaterialButton(
                   splashColor: Colors.grey,
                   //shape: const StadiumBorder(),
-                  onPressed: () {},
+                  onPressed: () {
+                    customChooseGroup(context, employeeData);
+                  },
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                     child: SizedBox(

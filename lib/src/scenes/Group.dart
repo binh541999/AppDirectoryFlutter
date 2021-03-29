@@ -14,6 +14,7 @@ import 'package:redux_example/src/providers/GroupModel.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:redux_example/src/providers/MemberModel.dart';
 import 'package:redux_example/src/scenes/AddMemberToGroup.dart';
+import 'package:redux_example/src/services/api/groupApi/groupAPI.dart';
 import 'package:telephony/telephony.dart';
 
 class Group extends StatefulWidget {
@@ -41,9 +42,9 @@ class _MyGroupPageState extends State<Group> {
   void _onPressAddMember() {
     Navigator.of(context).push(MaterialPageRoute(
       // we'll look at ColorDetailPage later
-      builder: (context) => AddMember(
-        idCurrentGroup:
-            Provider.of<GroupModel>(context, listen: false).currentGroup.id,
+      builder: (context) => new AddMember(
+        currentGroup:
+            Provider.of<GroupModel>(context, listen: false).currentGroup
       ),
     ));
   }
@@ -191,11 +192,14 @@ class _MyGroupPageState extends State<Group> {
                                                           groupsData
                                                               .groups[index]
                                                               .id);
+                                                  fetchDeleteGroup(groupsData
+                                                      .groups[index].id);
                                                   Provider.of<GroupModel>(
                                                           context,
                                                           listen: false)
                                                       .deleteGroup(groupsData
                                                           .groups[index].id);
+
                                                   if (groupsData
                                                           .groups?.isEmpty ??
                                                       false) {
@@ -234,6 +238,7 @@ class _MyGroupPageState extends State<Group> {
                                   foregroundColor: Colors.white,
                                   elevation: 0,
                                   onPressed: () {
+
                                     customCreateGroup(context);
                                   },
                                   child: Icon(Icons.add)),
@@ -264,8 +269,6 @@ class _MyGroupPageState extends State<Group> {
                       builder: (context, membersData, child) {
                     bool isEmptyMember =
                         membersData.currentGroupMembers?.isEmpty ?? true;
-                    print(membersData.currentGroupMembers);
-                    print(isEmptyMember);
                     var test;
                     String contactNumbers = '';
                     List<String> contactEmails = [];
@@ -354,21 +357,14 @@ class _MyGroupPageState extends State<Group> {
             Expanded(
               child: Consumer<GroupMemberModel>(
                   builder: (context, membersData, child) {
-                    // membersData.groupMems.forEach((element) {print(element.idMember);
-                    // print(element.idGroup);
-                    // });
-                    //membersData.currentGroupMembers.forEach((element) {print(element.idMember);});
-                    print(membersData.idGroup);
+
                 if (membersData.currentGroupMembers != null) {
-                  // print(membersData.idGroup);
-
-
                   var test = members.where((member) {
                     var index = membersData.currentGroupMembers.indexWhere(
                         (element) => element.userName == member.userName);
                     return index > -1 ? true : false;
                   }).toList();
-                 test.forEach((element) {print(element.empVietnameseName);});
+
                   return ListView.builder(
                     itemCount: test.length,
                     itemBuilder: (BuildContext context, int index) =>

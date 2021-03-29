@@ -22,6 +22,20 @@ class GroupMemberModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void loadDataJson(Map<String,dynamic> json) {
+    try {
+      if (json != null) {
+        for(final member in json['members']) {
+          var groupMember = new GroupMember(
+              idGroup: json['group_id'], userName: member['username']);
+          _groupMems.add(groupMember);
+        }
+      }
+    } catch (error) {
+      print('fetch data group member Failed $error');
+    }
+  }
+
   void changeIDGroup(int idGroup) {
     _idGroup = idGroup;
     notifyListeners();

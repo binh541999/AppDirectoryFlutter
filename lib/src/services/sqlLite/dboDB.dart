@@ -27,6 +27,19 @@ void _createDb(Database db) {
   populateDbGroupMember(db);
 }
 
+Future<void> deleteAllData() async {
+  // Get a reference to the database.
+  final db = await database;
+
+  await db.transaction((txn) async {
+    var batch = txn.batch();
+    batch.delete('Groups');
+    batch.delete('GroupMember');
+    batch.delete('Members');
+    await batch.commit();
+  });
+}
+
 void _deleteDb() async {
   var databasesPath = await getDatabasesPath();
   String path = join(databasesPath, DB_NAME);

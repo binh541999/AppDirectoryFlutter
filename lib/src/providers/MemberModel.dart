@@ -23,6 +23,35 @@ class MemberModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  void loadDataJson(List<dynamic> json) {
+    try {
+      if (json != null) {
+        for (final value in json) {
+          //print('value $json');
+          var member = new Member(
+            employeeId: value['employeeId'],
+            employeeCode: value['employeeCode'],
+            shortName: value["shortName"],
+            email: value["email"],
+            skype: value["skype"],
+            mobilePhone: value["mobilePhone"],
+            userName: value["userName"],
+            currentOfficeFullName: value["currentOfficeFullName"],
+            currentOffice: value["currentOffice"],
+            empVietnameseName: value["empVietnameseName"],
+            titleName: value["titleName"],
+            employeePicUrl: value["employeePicUrl"],
+            fullName: value["fullName"],
+          );
+          _members.add(member);
+        }
+        ;
+      }
+    } catch (error) {
+      print('fetch data Failed $error');
+    }
+  }
+
   Future<void> loadData() async {
     _members =  await selectAllMember();
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -57,7 +86,7 @@ class MemberModel extends ChangeNotifier {
 
   void removeAll() {
     _members.clear();
-    _userInfo.clear();
+   // _userInfo.clear();
     _searchString = '';
     print('clear member');
     // This call tells the widgets that are listening to this model to rebuild.

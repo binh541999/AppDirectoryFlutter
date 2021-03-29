@@ -115,14 +115,11 @@ class _CustomChooseContact extends State<CustomChooseContactBeforeCreateGroup> {
                                           element.employeeId ==
                                           widget.employeeData.employeeId);
                                   if (temp > -1) {
-                                    print(temp);
                                     isSelected = true;
                                   }
                                   return Checkbox(
                                     value: isSelected,
-                                    onChanged: (newValue) {
-                                      print(isSelected);
-                                    },
+
                                   );
                                 }),
                               )),

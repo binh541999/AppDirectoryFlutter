@@ -8,7 +8,6 @@ import 'package:redux_example/src/services/sqlLite/dboMember.dart';
 
 Future<void> dispatchContact(List<dynamic> json) {
   try {
-    print('dispatchContact');
     if (json != null) {
       for (final value in json) {
         //print('value $json');
@@ -47,15 +46,27 @@ Future<void> dispatchGroup(List<dynamic> json) {
           name: value['group_name'],
         );
         insertItemGroup(group);
-        for(final member in value['members']) {
-          var groupMember = new GroupMember(
-              idGroup: value['group_id'], userName: member['username']);
-          insertItemGroupMember(groupMember);
-        }
       }
       ;
     }
   } catch (error) {
-    print('fetch data Failed $error');
+    print('fetch data group Failed $error');
+  }
+}
+
+Future<void> dispatchGroupMember(Map<String,dynamic> json) {
+  try {
+    print('dispatchGroupMember');
+    if (json != null) {
+        for(final member in json['members']) {
+          var groupMember = new GroupMember(
+              idGroup: json['group_id'], userName: member['username']);
+          insertItemGroupMember(groupMember);
+        }
+
+
+    }
+  } catch (error) {
+    print('fetch data group member Failed $error');
   }
 }

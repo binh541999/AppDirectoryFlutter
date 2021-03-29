@@ -3,7 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:redux_example/src/navigations/index.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:redux_example/src/providers/StatusModel.dart';
-import 'package:redux_example/src/services/api/fetchData.dart';
+import 'file:///D:/FlutterProject/AppDirectoryFlutter/lib/src/services/api/memberApi/fetchData.dart';
+import 'package:redux_example/src/services/api/groupApi/groupAPI.dart';
 
 class LogIn extends StatefulWidget {
   @override
@@ -27,20 +28,19 @@ class _LogIn extends State<LogIn> {
   }
 
   void _onFetchPostsPressed(BuildContext context) async {
-    await fetchLogin(context, 'binhtatnguyen', 'T61b2541999').then((value) {
-      print(value);
+    await fetchLogin(context, 'binhtatnguyen', 'T61b2541999').then((value) async{
       if (value)
-        // Navigator.pushReplacementNamed(context, '/homePage');
+          {
+            await fetchGetGroup(context);
         SchedulerBinding.instance.addPostFrameCallback((_) {
           Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => RootNavigation()),
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => RootNavigation()),
             ModalRoute.withName('/homePage'),
           );
         });
-      // Navigator.pushReplacement(context,
-      //     MaterialPageRoute(builder: (BuildContext context) => RootNavigation()));
+      }
     }).catchError((value) => print(value));
   }
 

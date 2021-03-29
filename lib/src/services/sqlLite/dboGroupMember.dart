@@ -19,11 +19,8 @@ Future<List<GroupMember>> selectAllGroupMember() async {
   // Get a reference to the database.
   final db = await database;
 
-  // Query the table for all The Dogs.
   final List<Map<String, dynamic>> maps = await db.query('GroupMember');
-  //List<Movie> movies = maps.map((e) => Movie.formJson(e)).toList();
-  // Convert the List<Map<String, dynamic> into a List<Dog>.
-  //print('map length ${maps.first}');
+
   return List.generate(maps.length, (i) {
     return
       GroupMember(
@@ -36,32 +33,37 @@ Future<List<GroupMember>> selectAllGroupMember() async {
 Future<void> insertItemGroupMember(GroupMember groupMember) async {
   // Get a reference to the database.
   final db = await database;
-  //print('insertItem');
-  // Insert the Dog into the correct table. Also specify the
-  // `conflictAlgorithm`. In this case, if the same dog is inserted
-  // multiple times, it replaces the previous data.
 
-  //await db.rawInsert('INSERT INTO $TABLE_NAME(idGroup,idMember) VALUES(?,?)', [groupMember.idGroup,groupMember.idMember]);
+  await db.transaction((txn) async {
+    var batch = txn.batch();
+    batch.rawInsert('INSERT INTO $TABLE_NAME(idGroup,userName) VALUES(?,?)', [groupMember.idGroup,groupMember.userName]);
 
-  int test = await db.insert(
-    'GroupMember',
-    groupMember.toMap(),
-  );
+    await batch.commit();
+  });
+
 }
 
 Future<void> deleteItemGroupMember(GroupMember groupMember) async {
   // Get a reference to the database.
   final db = await database;
-  //print('insertItem');
-  // Insert the Dog into the correct table. Also specify the
-  // `conflictAlgorithm`. In this case, if the same dog is inserted
-  // multiple times, it replaces the previous data.
-  int test = await db.delete(
-    TABLE_NAME,
-    where: 'idGroup = ? AND userName = ?',
-    whereArgs: [groupMember.idGroup,groupMember.userName]
 
-  );
+  await db.transaction((txn) async {
+    var batch = txn.batch();
+    batch.delete(
+        TABLE_NAME,
+        where: 'idGroup = ? AND userName = ?',
+        whereArgs: [groupMember.idGroup,groupMember.userName]
+
+    );
+    await batch.commit();
+  });
+
+  // int test = await db.delete(
+  //   TABLE_NAME,
+  //   where: 'idGroup = ? AND userName = ?',
+  //   whereArgs: [groupMember.idGroup,groupMember.userName]
+  //
+  // );
 }
 
 Future<void> deleteItemGroupMemberWithGroupID(int  groupID) async {

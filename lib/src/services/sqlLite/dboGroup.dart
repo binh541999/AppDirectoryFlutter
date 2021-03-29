@@ -39,43 +39,44 @@ Future<void> insertItemGroup(Groups groups) async {
   // Insert the Dog into the correct table. Also specify the
   // `conflictAlgorithm`. In this case, if the same dog is inserted
   // multiple times, it replaces the previous data.
- await db.rawInsert('INSERT INTO $TABLE_NAME(id,name) VALUES(?,?)', [groups.id,groups.name]);
-  // await db.insert(
-  //   'Groups',
-  //   groupName,
-  // );
+  await db.transaction((txn) async {
+    var batch = txn.batch();
+    batch.rawInsert('INSERT INTO $TABLE_NAME(id,name) VALUES(?,?)', [groups.id,groups.name]);
+    await batch.commit();
+  });
+
+
 
 }
 
 Future<void> updateItemGroup(Groups groups) async {
   // Get a reference to the database.
   final db = await database;
-  //print('insertItem');
-  // Insert the Dog into the correct table. Also specify the
-  // `conflictAlgorithm`. In this case, if the same dog is inserted
-  // multiple times, it replaces the previous data.
-  await db.rawUpdate('UPDATE $TABLE_NAME SET name =  ? WHERE id = ?', [groups.name,groups.id]);
-  // await db.update(
-  //   'Groups',
-  //   groups.toMap(),
-  //   where: "id = ?",
-  //   whereArgs: [groups.id]
-  // );
+
+  await db.transaction((txn) async {
+    var batch = txn.batch();
+    batch.rawUpdate('UPDATE $TABLE_NAME SET name =  ? WHERE id = ?', [groups.name,groups.id]);
+    await batch.commit();
+  });
+
+
 }
 
 Future<void> deleteItemGroup(int groupID) async {
   // Get a reference to the database.
   final db = await database;
-  //print('insertItem');
-  // Insert the Dog into the correct table. Also specify the
-  // `conflictAlgorithm`. In this case, if the same dog is inserted
-  // multiple times, it replaces the previous data.
-  await db.delete(
-      TABLE_NAME,
-      where: 'id = ?',
-      whereArgs: [groupID]
 
-  );
+  await db.transaction((txn) async {
+    var batch = txn.batch();
+    batch.delete(
+        TABLE_NAME,
+        where: 'id = ?',
+        whereArgs: [groupID]
+    );
+    await batch.commit();
+  });
+
+
 }
 
 
