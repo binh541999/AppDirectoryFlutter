@@ -1,13 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:redux_example/src/Components/CustomUpdateGroup.dart';
-import 'package:redux_example/src/models/Groups.dart';
-import 'package:redux_example/src/models/Member.dart';
-import 'package:redux_example/src/providers/GroupMemberModel.dart';
-import 'package:redux_example/src/providers/GroupModel.dart';
-import 'package:redux_example/src/providers/MemberModel.dart';
+import 'package:tiny_kms_directory/src/models/Groups.dart';
 
 class CustomGroupAvatar extends StatefulWidget {
   CustomGroupAvatar({
@@ -20,7 +14,7 @@ class CustomGroupAvatar extends StatefulWidget {
   final Groups groupData;
   final List<String> imageList;
 
-  // final List<GroupMember> groupData;
+
 
   @override
   _CustomGroupAvatar createState() => _CustomGroupAvatar();
@@ -30,13 +24,6 @@ class _CustomGroupAvatar extends State<CustomGroupAvatar> {
   String imageUrl = '';
   bool isVisible = false;
 
-  // void initState() {
-  //   // TODO: implement initState
-  //   super.initState();
-  //   //setImageAvatar();
-  // }
-
-  void _onPressContact() {}
 
   Widget _buildAvatar(String picUrl) {
     return Expanded(
@@ -138,7 +125,6 @@ class _CustomGroupAvatar extends State<CustomGroupAvatar> {
                 ),
               ),
             ),
-
           ],
         ),
       ),

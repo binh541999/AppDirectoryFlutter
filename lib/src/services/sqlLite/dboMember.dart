@@ -1,7 +1,6 @@
-import 'package:redux_example/src/models/Member.dart';
-import 'package:redux_example/src/services/sqlLite/dboDB.dart';
+import 'package:tiny_kms_directory/src/models/Member.dart';
+import 'package:tiny_kms_directory/src/services/sqlLite/dboDB.dart';
 import 'package:sqflite/sqflite.dart';
-
 
 const String TABLE_NAME = "Members";
 
@@ -34,14 +33,13 @@ Future<List<Member>> selectAllMember() async {
   //List<Movie> movies = maps.map((e) => Movie.formJson(e)).toList();
   // Convert the List<Map<String, dynamic> into a List<Dog>.
   return List.generate(maps.length, (i) {
-    return
-      Member(
+    return Member(
       employeeId: maps[i]['employeeId'],
-        employeeCode: maps[i]['employeeCode'],
+      employeeCode: maps[i]['employeeCode'],
       shortName: maps[i]["shortName"],
       email: maps[i]["email"],
       skype: maps[i]["skype"],
-        mobilePhone: maps[i]["mobilePhone"],
+      mobilePhone: maps[i]["mobilePhone"],
       userName: maps[i]["userName"],
       currentOfficeFullName: maps[i]["currentOfficeFullName"],
       currentOffice: maps[i]["currentOffice"],
@@ -56,25 +54,24 @@ Future<List<Member>> selectAllMember() async {
 Future<void> insertItemMember(Member member) async {
   // Get a reference to the database.
   final db = await database;
-  //print('insertItem');
-  // Insert the Dog into the correct table. Also specify the
-  // `conflictAlgorithm`. In this case, if the same dog is inserted
-  // multiple times, it replaces the previous data.
-  await db.insert(
-    'Members',
-    member.toMap(),
-  );
-}
 
+  await db.transaction((txn) async {
+    var batch = txn.batch();
+    batch.insert(
+      'Members',
+      member.toMap(),
+    );
+    await batch.commit();
+  });
+}
 
 Future<void> deleteDataMember() async {
   // Get a reference to the database.
   final db = await database;
-  //print('insertItem');
-  // Insert the Dog into the correct table. Also specify the
-  // `conflictAlgorithm`. In this case, if the same dog is inserted
-  // multiple times, it replaces the previous data.
-  await db.delete(
-    'Members'
-  );
+
+  await db.transaction((txn) async {
+    var batch = txn.batch();
+    batch.delete('Members');
+    await batch.commit();
+  });
 }

@@ -12,7 +12,6 @@ class StatusModel with ChangeNotifier {
   Future<void> _loadStatus() async {
     await SharedPreferences.getInstance().then((prefs) {
       bool statusFirstOpen = prefs.getBool('isFirstOpen') ?? true;
-      print('first Open load $statusFirstOpen');
       _currentPrefs = PrefsState(isFirstOpen: statusFirstOpen);
       bool statusSignOut = prefs.getBool('isSignOut') ?? true;
       _currentPrefs = PrefsState(isFirstOpen: statusSignOut);
@@ -23,7 +22,6 @@ class StatusModel with ChangeNotifier {
 
   Future<void> _saveFirstOpen() async {
     await SharedPreferences.getInstance().then((prefs) {
-      print('first Open ${_currentPrefs.isFirstOpen}');
       prefs.setBool('isFirstOpen', _currentPrefs.isFirstOpen);
     });
   }

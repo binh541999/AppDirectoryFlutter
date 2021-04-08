@@ -1,97 +1,67 @@
-import 'package:redux_example/src/models/GroupMember.dart';
-import 'package:redux_example/src/services/sqlLite/dboDB.dart';
+import 'package:tiny_kms_directory/src/models/GroupMember.dart';
+import 'package:tiny_kms_directory/src/services/sqlLite/dboDB.dart';
 import 'package:sqflite/sqflite.dart';
 
-
 const String TABLE_NAME = "GroupMember";
-
 
 void populateDbGroupMember(Database db) async {
   await db.execute(
     """CREATE TABLE $TABLE_NAME(   id INTEGER PRIMARY KEY AUTOINCREMENT,
                                         idGroup INTEGER , 
-                                         idMember INTEGER 
+                                         userName VARCHAR(255)  
             )""",
   );
 }
 
 Future<List<GroupMember>> selectAllGroupMember() async {
-  // Get a reference to the database.
+
   final db = await database;
 
-  // Query the table for all The Dogs.
   final List<Map<String, dynamic>> maps = await db.query('GroupMember');
-  //List<Movie> movies = maps.map((e) => Movie.formJson(e)).toList();
-  // Convert the List<Map<String, dynamic> into a List<Dog>.
-  //print('map length ${maps.first}');
-  return List.generate(maps.length, (i) {
-    return
-      GroupMember(
-        idGroup: maps[i]['idGroup'],
-        idMember: maps[i]['idMember'],
 
-      );
+  return List.generate(maps.length, (i) {
+    return GroupMember(
+      idGroup: maps[i]['idGroup'],
+      userName: maps[i]['userName'],
+    );
   });
 }
 
 Future<void> insertItemGroupMember(GroupMember groupMember) async {
-  // Get a reference to the database.
-  print('insert db ${groupMember.idGroup}');
+
   final db = await database;
-  //print('insertItem');
-  // Insert the Dog into the correct table. Also specify the
-  // `conflictAlgorithm`. In this case, if the same dog is inserted
-  // multiple times, it replaces the previous data.
 
-  //await db.rawInsert('INSERT INTO $TABLE_NAME(idGroup,idMember) VALUES(?,?)', [groupMember.idGroup,groupMember.idMember]);
+  await db.transaction((txn) async {
+    var batch = txn.batch();
+    batch.rawInsert('INSERT INTO $TABLE_NAME(idGroup,userName) VALUES(?,?)',
+        [groupMember.idGroup, groupMember.userName]);
 
-  int test = await db.insert(
-    'GroupMember',
-    groupMember.toMap(),
-  );
-  print('inserted2: $test');
+    await batch.commit();
+  });
 }
 
 Future<void> deleteItemGroupMember(GroupMember groupMember) async {
-  // Get a reference to the database.
   final db = await database;
-  //print('insertItem');
-  // Insert the Dog into the correct table. Also specify the
-  // `conflictAlgorithm`. In this case, if the same dog is inserted
-  // multiple times, it replaces the previous data.
-  int test = await db.delete(
-    TABLE_NAME,
-    where: 'idGroup = ? AND idMember = ?',
-    whereArgs: [groupMember.idGroup,groupMember.idMember]
 
-  );
-  print('inserted2: $test');
+  await db.transaction((txn) async {
+    var batch = txn.batch();
+    batch.delete(TABLE_NAME,
+        where: 'idGroup = ? AND userName = ?',
+        whereArgs: [groupMember.idGroup, groupMember.userName]);
+    await batch.commit();
+  });
+
 }
 
-Future<void> deleteItemGroupMemberWithGroupID(int  groupID) async {
-  // Get a reference to the database.
+Future<void> deleteItemGroupMemberWithGroupID(int groupID) async {
+
   final db = await database;
-  //print('insertItem');
-  // Insert the Dog into the correct table. Also specify the
-  // `conflictAlgorithm`. In this case, if the same dog is inserted
-  // multiple times, it replaces the previous data.
-  int test = await db.delete(
-      TABLE_NAME,
-      where: 'idGroup = ? ',
-      whereArgs: [groupID]
 
-  );
+      await db.delete(TABLE_NAME, where: 'idGroup = ? ', whereArgs: [groupID]);
 }
-
 
 Future<void> deleteDataGroupMember() async {
-  // Get a reference to the database.
   final db = await database;
-  //print('insertItem');
-  // Insert the Dog into the correct table. Also specify the
-  // `conflictAlgorithm`. In this case, if the same dog is inserted
-  // multiple times, it replaces the previous data.
-  await db.delete(
-    TABLE_NAME
-  );
+
+  await db.delete(TABLE_NAME);
 }

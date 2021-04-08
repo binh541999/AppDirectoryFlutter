@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:provider/provider.dart';
-
-import 'package:redux_example/src/Components/CustomContact.dart';
-import 'package:redux_example/src/Components/CustomCreateGroup.dart';
-import 'package:redux_example/src/Components/CustomGroupAvatar.dart';
-import 'package:redux_example/src/Components/CustomUpdateGroup.dart';
-import 'package:redux_example/src/models/GroupMember.dart';
-import 'package:redux_example/src/models/Groups.dart';
-import 'package:redux_example/src/models/Member.dart';
-import 'package:redux_example/src/providers/GroupMemberModel.dart';
-import 'package:redux_example/src/providers/GroupModel.dart';
+import 'package:tiny_kms_directory/src/Components/CustomContact.dart';
+import 'package:tiny_kms_directory/src/Components/CustomCreateGroup.dart';
+import 'package:tiny_kms_directory/src/Components/CustomGroupAvatar.dart';
+import 'package:tiny_kms_directory/src/Components/CustomUpdateGroup.dart';
+import 'package:tiny_kms_directory/src/models/Member.dart';
+import 'package:tiny_kms_directory/src/providers/GroupMemberModel.dart';
+import 'package:tiny_kms_directory/src/providers/GroupModel.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:redux_example/src/providers/MemberModel.dart';
-import 'package:redux_example/src/scenes/AddMemberToGroup.dart';
-import 'package:telephony/telephony.dart';
+import 'package:tiny_kms_directory/src/providers/MemberModel.dart';
+import 'package:tiny_kms_directory/src/scenes/AddMemberToGroup.dart';
+import 'package:tiny_kms_directory/src/services/api/groupApi/groupAPI.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Group extends StatefulWidget {
   Group({
@@ -31,20 +28,14 @@ class _MyGroupPageState extends State<Group> {
 
   @override
   void initState() {
-    // Provider.of<GroupMemberModel>(context, listen: false).changeIDGroup(
-    //   Provider.of<GroupModel>(context, listen: false).currentGroup.id
-    // );
-
     super.initState();
   }
 
   void _onPressAddMember() {
     Navigator.of(context).push(MaterialPageRoute(
-      // we'll look at ColorDetailPage later
-      builder: (context) => AddMember(
-        idCurrentGroup:
-            Provider.of<GroupModel>(context, listen: false).currentGroup.id,
-      ),
+      builder: (context) => new AddMember(
+          currentGroup:
+              Provider.of<GroupModel>(context, listen: false).currentGroup),
     ));
   }
 
@@ -82,8 +73,7 @@ class _MyGroupPageState extends State<Group> {
                                 var test = members.where((member) {
                                   var temp = membersData.groupMems.indexWhere(
                                       (element) =>
-                                          element.idMember ==
-                                              member.employeeId &&
+                                          element.userName == member.userName &&
                                           element.idGroup ==
                                               groupsData.groups[index].id);
                                   return temp > -1 ? true : false;
@@ -98,6 +88,7 @@ class _MyGroupPageState extends State<Group> {
                                   }
                                 }
                                 return Stack(
+                                  alignment: Alignment.topCenter,
                                   children: [
                                     Positioned(
                                       child: RawMaterialButton(
@@ -191,11 +182,14 @@ class _MyGroupPageState extends State<Group> {
                                                           groupsData
                                                               .groups[index]
                                                               .id);
+                                                  fetchDeleteGroup(groupsData
+                                                      .groups[index].id);
                                                   Provider.of<GroupModel>(
                                                           context,
                                                           listen: false)
                                                       .deleteGroup(groupsData
                                                           .groups[index].id);
+
                                                   if (groupsData
                                                           .groups?.isEmpty ??
                                                       false) {
@@ -211,8 +205,7 @@ class _MyGroupPageState extends State<Group> {
                                     ),
                                   ],
                                 );
-                              }
-                              );
+                              });
                         });
                       }),
                     ),
@@ -264,22 +257,19 @@ class _MyGroupPageState extends State<Group> {
                       builder: (context, membersData, child) {
                     bool isEmptyMember =
                         membersData.currentGroupMembers?.isEmpty ?? true;
-                    print(membersData.currentGroupMembers);
-                    print(isEmptyMember);
                     var test;
                     String contactNumbers = '';
-                    List<String> contactEmails = [];
+                    String contactEmails = '';
                     if (!isEmptyMember) {
                       test = members.where((member) {
                         var index = membersData.currentGroupMembers.indexWhere(
-                            (element) => element.idMember == member.employeeId);
+                            (element) => element.userName == member.userName);
                         return index > -1 ? true : false;
                       }).toList();
-                      contactNumbers = '';
-                      contactEmails = [];
+
                       test.forEach((element) {
                         contactNumbers += '${element.mobilePhone};';
-                        contactEmails.add(element.email);
+                        contactEmails += '${element.email};';
                       });
                     }
 
@@ -298,13 +288,8 @@ class _MyGroupPageState extends State<Group> {
                                   isEmptyMember ? Colors.grey : Colors.white,
                               elevation: 0,
                               disabledElevation: 0,
-                              onPressed: () async {
-                                Telephony telephony = Telephony.instance;
-                                final bool result = await telephony
-                                    .requestPhoneAndSmsPermissions;
-                                await telephony.sendSmsByDefaultApp(
-                                    to: contactNumbers.toString(),
-                                    message: "");
+                              onPressed: () {
+                                launch('sms:${contactNumbers.toString()}');
                               },
                               child: Icon(Icons.message)),
                           FloatingActionButton(
@@ -316,13 +301,8 @@ class _MyGroupPageState extends State<Group> {
                               foregroundColor:
                                   isEmptyMember ? Colors.grey : Colors.white,
                               elevation: 0,
-                              onPressed: () async {
-                                final Email email = Email(
-                                  recipients: contactEmails,
-                                  isHTML: false,
-                                );
-
-                                await FlutterEmailSender.send(email);
+                              onPressed: () {
+                                launch('mailto:$contactEmails');
                               },
                               child: Icon(Icons.mail)),
                         ],
@@ -354,21 +334,13 @@ class _MyGroupPageState extends State<Group> {
             Expanded(
               child: Consumer<GroupMemberModel>(
                   builder: (context, membersData, child) {
-                    // membersData.groupMems.forEach((element) {print(element.idMember);
-                    // print(element.idGroup);
-                    // });
-                    //membersData.currentGroupMembers.forEach((element) {print(element.idMember);});
-                    print(membersData.idGroup);
                 if (membersData.currentGroupMembers != null) {
-                  // print(membersData.idGroup);
-
-
                   var test = members.where((member) {
                     var index = membersData.currentGroupMembers.indexWhere(
-                        (element) => element.idMember == member.employeeId);
+                        (element) => element.userName == member.userName);
                     return index > -1 ? true : false;
                   }).toList();
-                 test.forEach((element) {print(element.empVietnameseName);});
+
                   return ListView.builder(
                     itemCount: test.length,
                     itemBuilder: (BuildContext context, int index) =>

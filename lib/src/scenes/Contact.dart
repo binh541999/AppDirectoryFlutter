@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:redux_example/src/Components/CustomContact.dart';
-import 'package:redux_example/src/models/Member.dart';
-import 'package:redux_example/src/providers/MemberModel.dart';
-import 'package:redux_example/src/providers/StatusModel.dart';
-
+import 'package:tiny_kms_directory/src/Components/CustomContact.dart';
+import 'package:tiny_kms_directory/src/Components/CustomRemindAlert.dart';
+import 'package:tiny_kms_directory/src/providers/MemberModel.dart';
 import '../Components/CustomContact.dart';
-
 
 class Contact extends StatefulWidget {
   Contact({
@@ -22,7 +19,7 @@ class _Contact extends State<Contact> {
 
   @override
   void initState() {
-
+    showAlert(context);
     super.initState();
   }
 
@@ -31,7 +28,6 @@ class _Contact extends State<Contact> {
     _controller.dispose();
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -46,11 +42,11 @@ class _Contact extends State<Contact> {
                 contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
                 border: OutlineInputBorder(),
                 suffixIcon: IconButton(
-                  onPressed:(){
+                  onPressed: () {
                     Provider.of<MemberModel>(context, listen: false)
                         .changeSearchString('');
-                  return _controller.clear();
-                  } ,
+                    return _controller.clear();
+                  },
                   icon: Icon(Icons.clear),
                 ),
                 hintText: 'Search ',
@@ -68,7 +64,6 @@ class _Contact extends State<Contact> {
           Expanded(
             child:
                 Consumer<MemberModel>(builder: (context, membersData, child) {
-             // print(membersData.members.toString());
               return ListView.builder(
                 itemCount: membersData.members.length,
                 itemBuilder: (BuildContext context, int index) => CustomContact(

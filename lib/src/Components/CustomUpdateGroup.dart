@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:redux_example/src/models/Groups.dart';
-import 'package:redux_example/src/providers/GroupModel.dart';
+import 'package:tiny_kms_directory/src/models/Groups.dart';
+import 'package:tiny_kms_directory/src/models/MemberUsernameOnly.dart';
+import 'package:tiny_kms_directory/src/providers/GroupMemberModel.dart';
+import 'package:tiny_kms_directory/src/providers/GroupModel.dart';
+import 'package:tiny_kms_directory/src/services/api/groupApi/groupAPI.dart';
 
 customUpdateGroup(BuildContext context, Groups groupData) {
   final newName = TextEditingController(text: groupData.name);
   final _formKey = GlobalKey<FormState>();
   bool _validate = false;
-  // set up the buttons
 
-  // set up the AlertDialog
+
   AlertDialog alert = AlertDialog(
     title: Text(
-      "Create Group",
+      "Update Group",
       textAlign: TextAlign.center,
     ),
     content: Form(
@@ -57,7 +58,6 @@ customUpdateGroup(BuildContext context, Groups groupData) {
                 style: TextStyle(color: Colors.white),
               ),
               onPressed: () {
-                //groupsData.groups.forEach((element) {
                 for (final element in groupsData.groups) {
                   if (element.name == newName.text &&
                       newName.text != groupData.name) {
@@ -65,19 +65,34 @@ customUpdateGroup(BuildContext context, Groups groupData) {
                     break;
                   }
                 }
-                ;
+
                 if (!_validate) {
                   _validate = false;
-                  var group = new Groups(
-                      id: groupData.id,
-                      name: newName.text);
+                  var group = new Groups(id: groupData.id, name: newName.text);
                   groupsData.updateGroup(group);
+                  var memberList =
+                      Provider.of<GroupMemberModel>(context, listen: false)
+                          .groupMems
+                          .where((member) => member.idGroup == groupData.id)
+                          .toList();
+                  List<MemberUsernameOnly> members = [];
+                  if (memberList?.isNotEmpty ?? false) {
+                    memberList.forEach((element) {
+                      members.add(
+                          new MemberUsernameOnly(username: element.userName));
+                    });
+                  }
+
+                  List jsonList = [];
+                  members.map((item) => jsonList.add(item.toJson())).toList();
+                  print(jsonList);
+                  fetchPutGroup(group.id, group.name, jsonList);
                   Navigator.of(context, rootNavigator: true).pop();
                 } else {
                   _formKey.currentState.validate();
                   _validate = false;
                 }
-                ;
+
               },
             );
           },
@@ -86,7 +101,6 @@ customUpdateGroup(BuildContext context, Groups groupData) {
     ],
   );
 
-  // show the dialog
   showDialog(
     context: context,
     builder: (BuildContext context) {

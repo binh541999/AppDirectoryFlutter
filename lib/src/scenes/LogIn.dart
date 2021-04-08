@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:redux_example/src/navigations/index.dart';
+import 'package:tiny_kms_directory/src/navigations/index.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:redux_example/src/providers/StatusModel.dart';
-import 'package:redux_example/src/services/api/fetchData.dart';
+import 'package:tiny_kms_directory/src/providers/StatusModel.dart';
+import 'file:///D:/FlutterProject/AppDirectoryFlutter/lib/src/services/api/memberApi/fetchData.dart';
+import 'package:tiny_kms_directory/src/services/api/groupApi/groupAPI.dart';
 
 class LogIn extends StatefulWidget {
   @override
   _LogIn createState() => _LogIn();
 }
 
-// Define a corresponding State class.
-// This class holds the data related to the Form.
 class _LogIn extends State<LogIn> {
-  // Create a text controller and use it to retrieve the current value
-  // of the TextField.
-  final password = TextEditingController();
-  final username = TextEditingController();
+  final password = TextEditingController(text:'T61b2541999');
+  final username = TextEditingController(text:'binhtatnguyen');
 
   @override
   void dispose() {
@@ -27,20 +24,19 @@ class _LogIn extends State<LogIn> {
   }
 
   void _onFetchPostsPressed(BuildContext context) async {
-    await fetchLogin(context, 'binhtatnguyen', 'T61b2541999').then((value) {
-      print(value);
-      if (value)
-        // Navigator.pushReplacementNamed(context, '/homePage');
+    await fetchLogin(context,username.text ,password.text  )
+        .then((value) async {
+      if (value) {
+        await fetchGetGroup(context);
         SchedulerBinding.instance.addPostFrameCallback((_) {
           Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(
-                  builder: (BuildContext context) => RootNavigation()),
+            context,
+            MaterialPageRoute(
+                builder: (BuildContext context) => RootNavigation()),
             ModalRoute.withName('/homePage'),
           );
         });
-      // Navigator.pushReplacement(context,
-      //     MaterialPageRoute(builder: (BuildContext context) => RootNavigation()));
+      }
     }).catchError((value) => print(value));
   }
 

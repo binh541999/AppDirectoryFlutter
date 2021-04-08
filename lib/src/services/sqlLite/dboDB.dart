@@ -1,6 +1,6 @@
-import 'package:redux_example/src/services/sqlLite/dboGroup.dart';
-import 'package:redux_example/src/services/sqlLite/dboGroupMember.dart';
-import 'package:redux_example/src/services/sqlLite/dboMember.dart';
+import 'package:tiny_kms_directory/src/services/sqlLite/dboGroup.dart';
+import 'package:tiny_kms_directory/src/services/sqlLite/dboGroupMember.dart';
+import 'package:tiny_kms_directory/src/services/sqlLite/dboMember.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -27,8 +27,21 @@ void _createDb(Database db) {
   populateDbGroupMember(db);
 }
 
-void _deleteDb() async {
-  var databasesPath = await getDatabasesPath();
-  String path = join(databasesPath, DB_NAME);
-  await deleteDatabase(path);
+Future<void> deleteAllData() async {
+  // Get a reference to the database.
+  final db = await database;
+
+  await db.transaction((txn) async {
+    var batch = txn.batch();
+    batch.delete('Groups');
+    batch.delete('GroupMember');
+    batch.delete('Members');
+    await batch.commit();
+  });
 }
+
+// void _deleteDb() async {
+//   var databasesPath = await getDatabasesPath();
+//   String path = join(databasesPath, DB_NAME);
+//   await deleteDatabase(path);
+// }

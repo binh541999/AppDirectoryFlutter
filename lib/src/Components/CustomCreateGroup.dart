@@ -1,13 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:redux_example/src/Components/CustomChooseContactBeforeCreate.dart';
-import 'package:redux_example/src/models/GroupMember.dart';
-import 'package:redux_example/src/models/Groups.dart';
-import 'package:redux_example/src/providers/GroupMemberModel.dart';
-import 'package:redux_example/src/providers/GroupModel.dart';
-import 'package:redux_example/src/providers/MemberModel.dart';
+import 'package:tiny_kms_directory/src/Components/CustomChooseContactBeforeCreate.dart';
+import 'package:tiny_kms_directory/src/models/GroupMember.dart';
+import 'package:tiny_kms_directory/src/models/Groups.dart';
+import 'package:tiny_kms_directory/src/models/MemberUsernameOnly.dart';
+import 'package:tiny_kms_directory/src/providers/GroupMemberModel.dart';
+import 'package:tiny_kms_directory/src/providers/GroupModel.dart';
+import 'package:tiny_kms_directory/src/providers/MemberModel.dart';
+import 'package:tiny_kms_directory/src/services/api/groupApi/groupAPI.dart';
 
 customCreateGroup(BuildContext context) {
   final groupName = TextEditingController();
@@ -15,7 +16,6 @@ customCreateGroup(BuildContext context) {
   var _controller = TextEditingController();
   bool _validate = false;
 
-  // show the dialog
   showGeneralDialog(
     context: context,
     barrierDismissible: false,
@@ -51,9 +51,10 @@ customCreateGroup(BuildContext context) {
                           fontFamily: 'Overpass',
                           fontSize: 20),
                     ),
-                    onPressed: () {
+                    onPressed: () async {
                       groupsData.groups.forEach((element) {
-                        if (element.name == groupName.text) {
+                        if (element.name == groupName.text ||
+                            groupName.text == '') {
                           _validate = true;
                         }
                       });
@@ -61,56 +62,53 @@ customCreateGroup(BuildContext context) {
                       if (!_validate) {
                         _validate = false;
 
-                        if (groupsData.groups.length > 0) {
-                          var group = new Groups(
-                              id: groupsData.groups[0].id + 1,
-                              name: groupName.text);
+                        List<MemberUsernameOnly> members = [];
+                        var tempMembers =
+                            Provider.of<MemberModel>(context, listen: false)
+                                .tempMembers;
+                        var userInfo =
+                            Provider.of<MemberModel>(context, listen: false)
+                                .userInfo;
+                        members.add(new MemberUsernameOnly(
+                            username: userInfo.first.userName));
+                        if (tempMembers?.isNotEmpty ?? false) {
+                          tempMembers.forEach((element) {
+                            members.add(new MemberUsernameOnly(
+                                username: element.userName));
+                          });
+                          Provider.of<MemberModel>(context, listen: false)
+                              .removeAllTempMember();
+                        }
+
+                        List jsonList = [];
+                        members
+                            .map((item) => jsonList.add(item.toJson()))
+                            .toList();
+
+                        int groupID =
+                            await fetchPostGroup(groupName.text, jsonList);
+                        if (groupID > -1) {
+                          var group =
+                              new Groups(id: groupID, name: groupName.text);
                           groupsData.addGroup(group);
                           groupsData.currentGroup = groupsData.groups[0];
                           Provider.of<GroupMemberModel>(context, listen: false)
                               .changeIDGroup(groupsData.groups[0].id);
-                          var members= Provider.of<MemberModel>(context, listen: false).tempMembers;
-                          if(members?.isNotEmpty ?? false){
-                            print(members.length);
-                            members.forEach((element) {
-                              print(element);
-                              Provider.of<GroupMemberModel>(context, listen: false).addGroupMember(
-                                  new GroupMember(
-                                    idGroup : groupsData.groups[0].id,
-                                    idMember: element.employeeId,
-                                  )
-                              );
-                            });
-                          }
-                          Provider.of<MemberModel>(context, listen: false)
-                              .removeAllTempMember();
-                        } else {
-                          var group = new Groups(id: 0, name: groupName.text);
-                          groupsData.addGroup(group);
-                          groupsData.currentGroup = groupsData.groups[0];
-                          Provider.of<GroupMemberModel>(context, listen: false)
-                              .changeIDGroup(groupsData.groups[0].id);
-                          var members= Provider.of<MemberModel>(context, listen: false).tempMembers;
-                          if(members?.isNotEmpty ?? false){
-                            print(members.length);
-                            members.forEach((element) {
-                              print(element);
-                              Provider.of<GroupMemberModel>(context, listen: false).addGroupMember(
-                                  new GroupMember(
-                                    idGroup : groupsData.groups[0].id,
-                                    idMember: element.employeeId,
-                                  )
-                              );
-                            });
-                          }
-                          Provider.of<MemberModel>(context, listen: false)
-                              .removeAllTempMember();
+                          members.forEach((element) {
+                            Provider.of<GroupMemberModel>(context,
+                                    listen: false)
+                                .addGroupMember(new GroupMember(
+                              idGroup: groupID,
+                              userName: element.username,
+                            ));
+                          });
                         }
                         Navigator.of(context, rootNavigator: true).pop();
                       } else {
                         _formKey.currentState.validate();
                         _validate = false;
-                      };
+                      }
+
                     },
                   );
                 },
@@ -267,14 +265,16 @@ customCreateGroup(BuildContext context) {
               Expanded(
                 child: Consumer<MemberModel>(
                     builder: (context, membersData, child) {
-                  // print(membersData.members.toString());
+                  var memberlist = membersData.members
+                      .where((member) => member.userName != null)
+                      .toList();
+
                   return ListView.builder(
-                      itemCount: membersData.members.length,
+                      itemCount: memberlist.length,
                       itemBuilder: (BuildContext context, int index) {
                         return CustomChooseContactBeforeCreateGroup(
-                          employeeData: membersData.members[index],
-                          key: Key(
-                              membersData.members[index].employeeId.toString()),
+                          employeeData: memberlist[index],
+                          key: Key(memberlist[index].employeeId.toString()),
                         );
                       });
                 }),
