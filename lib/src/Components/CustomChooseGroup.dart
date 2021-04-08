@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:redux_example/src/models/GroupMember.dart';
-import 'package:redux_example/src/models/Groups.dart';
-import 'package:redux_example/src/models/Member.dart';
-import 'package:redux_example/src/models/MemberUsernameOnly.dart';
-import 'package:redux_example/src/providers/GroupMemberModel.dart';
-import 'package:redux_example/src/providers/GroupModel.dart';
-import 'package:redux_example/src/providers/MemberModel.dart';
-import 'package:redux_example/src/services/api/groupApi/groupAPI.dart';
+import 'package:tiny_kms_directory/src/models/GroupMember.dart';
+import 'package:tiny_kms_directory/src/models/Groups.dart';
+import 'package:tiny_kms_directory/src/models/Member.dart';
+import 'package:tiny_kms_directory/src/models/MemberUsernameOnly.dart';
+import 'package:tiny_kms_directory/src/providers/GroupMemberModel.dart';
+import 'package:tiny_kms_directory/src/providers/GroupModel.dart';
+import 'package:tiny_kms_directory/src/services/api/groupApi/groupAPI.dart';
 
 customChooseGroup(BuildContext context, Member contactData) {
   bool _isSelected = false;
@@ -19,39 +18,37 @@ customChooseGroup(BuildContext context, Member contactData) {
     if (_isSelected) {
       Provider.of<GroupMemberModel>(context, listen: false)
           .addGroupMember(newGroupMember);
-      var memberList = Provider
-          .of<GroupMemberModel>(context, listen: false)
-          .groupMems.where((member) => member.idGroup == group.id).toList();
+      var memberList = Provider.of<GroupMemberModel>(context, listen: false)
+          .groupMems
+          .where((member) => member.idGroup == group.id)
+          .toList();
       List<MemberUsernameOnly> members = [];
       if (memberList?.isNotEmpty ?? false) {
         memberList.forEach((element) {
-          members.add(new MemberUsernameOnly(
-              username: element.userName));
+          members.add(new MemberUsernameOnly(username: element.userName));
         });
-      };
+      }
+
       List jsonList = [];
-      members
-          .map((item) => jsonList.add(item.toJson()))
-          .toList();
+      members.map((item) => jsonList.add(item.toJson())).toList();
       print(jsonList);
       fetchPutGroup(group.id, group.name, jsonList);
     } else {
       Provider.of<GroupMemberModel>(context, listen: false)
           .deleteGroupMember(newGroupMember);
-      var memberList = Provider
-          .of<GroupMemberModel>(context, listen: false)
-          .groupMems.where((member) => member.idGroup == group.id).toList();
+      var memberList = Provider.of<GroupMemberModel>(context, listen: false)
+          .groupMems
+          .where((member) => member.idGroup == group.id)
+          .toList();
       List<MemberUsernameOnly> members = [];
       if (memberList?.isNotEmpty ?? false) {
         memberList.forEach((element) {
-          members.add(new MemberUsernameOnly(
-              username: element.userName));
+          members.add(new MemberUsernameOnly(username: element.userName));
         });
-      };
+      }
+
       List jsonList = [];
-      members
-          .map((item) => jsonList.add(item.toJson()))
-          .toList();
+      members.map((item) => jsonList.add(item.toJson())).toList();
       print(jsonList);
       fetchPutGroup(group.id, group.name, jsonList);
     }
@@ -63,10 +60,9 @@ customChooseGroup(BuildContext context, Member contactData) {
     barrierLabel: "Modal",
     pageBuilder: (_, __, ___) {
       return Dialog(
-
         backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-            borderRadius:BorderRadius.circular(20.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
         child: Container(
           padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
           decoration: BoxDecoration(
@@ -78,9 +74,8 @@ customChooseGroup(BuildContext context, Member contactData) {
             ),
           ),
           child: Container(
-            height:MediaQuery. of(context). size. height/2,
-            child:
-                Consumer<GroupModel>(builder: (context, groupsData, child) {
+            height: MediaQuery.of(context).size.height / 2,
+            child: Consumer<GroupModel>(builder: (context, groupsData, child) {
               if (groupsData.groups?.isNotEmpty ?? false) {
                 return Container(
                   height: 80,
@@ -91,8 +86,7 @@ customChooseGroup(BuildContext context, Member contactData) {
                         return RawMaterialButton(
                             splashColor: Colors.grey,
                             onPressed: () {
-                              _onPressGroup(
-                                  groupsData.groups[index]);
+                              _onPressGroup(groupsData.groups[index]);
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -106,9 +100,9 @@ customChooseGroup(BuildContext context, Member contactData) {
                                       padding: const EdgeInsets.all(10.0),
                                       child: Consumer<GroupMemberModel>(builder:
                                           (context, membersData, child) {
-                                        var isSelected=false;
-                                        var temp = membersData.groupMems.indexWhere(
-                                            (element) =>
+                                        var isSelected = false;
+                                        var temp = membersData.groupMems
+                                            .indexWhere((element) =>
                                                 element.idGroup ==
                                                     groupsData
                                                         .groups[index].id &&

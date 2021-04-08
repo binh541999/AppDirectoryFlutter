@@ -1,23 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:redux_example/src/Components/CustomChooseContact.dart';
-import 'package:redux_example/src/Components/CustomContact.dart';
-import 'package:redux_example/src/models/Groups.dart';
-import 'package:redux_example/src/models/Member.dart';
-import 'package:redux_example/src/models/MemberUsernameOnly.dart';
-import 'package:redux_example/src/providers/GroupMemberModel.dart';
-import 'package:redux_example/src/providers/MemberModel.dart';
-import 'package:redux_example/src/providers/StatusModel.dart';
-import 'package:redux_example/src/services/api/groupApi/groupAPI.dart';
-
-
+import 'package:tiny_kms_directory/src/Components/CustomChooseContact.dart';
+import 'package:tiny_kms_directory/src/models/Groups.dart';
+import 'package:tiny_kms_directory/src/models/MemberUsernameOnly.dart';
+import 'package:tiny_kms_directory/src/providers/GroupMemberModel.dart';
+import 'package:tiny_kms_directory/src/providers/MemberModel.dart';
+import 'package:tiny_kms_directory/src/services/api/groupApi/groupAPI.dart';
 
 class AddMember extends StatefulWidget {
-  AddMember({
-    Key key,
-    @required this.currentGroup
-  }) : super(key: key);
- final Groups currentGroup;
+  AddMember({Key key, @required this.currentGroup}) : super(key: key);
+  final Groups currentGroup;
   @override
   _AddMember createState() => _AddMember();
 }
@@ -27,29 +19,24 @@ class _AddMember extends State<AddMember> {
 
   @override
   void initState() {
-
     super.initState();
   }
 
-  Future<bool> _onBackPressed() {
-    var memberList = Provider
-        .of<GroupMemberModel>(context, listen: false)
+  void _onBackPressed() {
+    var memberList = Provider.of<GroupMemberModel>(context, listen: false)
         .currentGroupMembers;
     List<MemberUsernameOnly> members = [];
     if (memberList?.isNotEmpty ?? false) {
       memberList.forEach((element) {
-        members.add(new MemberUsernameOnly(
-            username: element.userName));
+        members.add(new MemberUsernameOnly(username: element.userName));
       });
       List jsonList = [];
-      members
-          .map((item) => jsonList.add(item.toJson()))
-          .toList();
+      members.map((item) => jsonList.add(item.toJson())).toList();
       print(jsonList);
-      fetchPutGroup(widget.currentGroup.id,widget.currentGroup.name , jsonList);
-      //Navigator.of(context, rootNavigator: true).pop();
+      fetchPutGroup(widget.currentGroup.id, widget.currentGroup.name, jsonList);
       Navigator.of(context).pop(true);
-    };
+    }
+
   }
 
   @override
@@ -71,11 +58,11 @@ class _AddMember extends State<AddMember> {
                   contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
                   border: OutlineInputBorder(),
                   suffixIcon: IconButton(
-                    onPressed:(){
+                    onPressed: () {
                       Provider.of<MemberModel>(context, listen: false)
                           .changeSearchString('');
                       return _controller.clear();
-                    } ,
+                    },
                     icon: Icon(Icons.clear),
                   ),
                   hintText: 'Search ',
@@ -92,16 +79,18 @@ class _AddMember extends State<AddMember> {
             ),
             Expanded(
               child:
-              Consumer<MemberModel>(builder: (context, membersData, child) {
-                var memberlist = membersData.members.where((member) => member.userName != null).toList();
+                  Consumer<MemberModel>(builder: (context, membersData, child) {
+                var memberlist = membersData.members
+                    .where((member) => member.userName != null)
+                    .toList();
                 return ListView.builder(
                   itemCount: memberlist.length,
-                  itemBuilder: (BuildContext context, int index) => CustomChooseContact(
+                  itemBuilder: (BuildContext context, int index) =>
+                      CustomChooseContact(
                     employeeData: memberlist[index],
-                      idCurrentGroup : widget.currentGroup.id,
+                    idCurrentGroup: widget.currentGroup.id,
                     key: Key(memberlist[index].employeeId.toString()),
                   ),
-                  //children: _buildPosts(posts),
                 );
               }),
             ),

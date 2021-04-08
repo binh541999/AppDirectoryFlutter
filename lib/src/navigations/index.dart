@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:redux_example/src/Components/CustomDrawer.dart';
+import 'package:tiny_kms_directory/src/Components/CustomDrawer.dart';
 
-import 'package:redux_example/src/models/TabNavigationItem.dart';
+import 'package:tiny_kms_directory/src/models/TabNavigationItem.dart';
 
 class RootNavigation extends StatelessWidget {
   static const String _title = 'Flutter Code Sample';
@@ -11,7 +11,6 @@ class RootNavigation extends StatelessWidget {
     return MaterialApp(
       title: _title,
       home: Navigation(),
-
     );
   }
 }
@@ -28,9 +27,6 @@ class Navigation extends StatefulWidget {
 class _MyStatefulWidgetState extends State<Navigation> {
   int _selectedIndex = 0;
 
-@override
-
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -43,28 +39,22 @@ class _MyStatefulWidgetState extends State<Navigation> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-            (_selectedIndex==0)? 'Contact' : 'Group',
+          (_selectedIndex == 0) ? 'Contact' : 'Group',
         ),
-
       ),
-      body:
-
-      IndexedStack(
-        index:_selectedIndex,
+      body: IndexedStack(
+        index: _selectedIndex,
         children: [
-          for (final tabItem in TabNavigationItem.items )
-            tabItem.screen,
+          for (final tabItem in TabNavigationItem.items) tabItem.screen,
         ],
       ),
-      drawer: Drawer(
-        child: CustomDrawer()
-      ),
+      drawer: Drawer(child: CustomDrawer()),
       bottomNavigationBar: BottomNavigationBar(
         items: [
-          for (final tabItem in TabNavigationItem.items )
+          for (final tabItem in TabNavigationItem.items)
             BottomNavigationBarItem(
-                icon: tabItem.icon,
-                label: tabItem.title,
+              icon: tabItem.icon,
+              label: tabItem.title,
             )
         ],
         currentIndex: _selectedIndex,

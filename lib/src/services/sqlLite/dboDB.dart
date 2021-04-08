@@ -1,6 +1,6 @@
-import 'package:redux_example/src/services/sqlLite/dboGroup.dart';
-import 'package:redux_example/src/services/sqlLite/dboGroupMember.dart';
-import 'package:redux_example/src/services/sqlLite/dboMember.dart';
+import 'package:tiny_kms_directory/src/services/sqlLite/dboGroup.dart';
+import 'package:tiny_kms_directory/src/services/sqlLite/dboGroupMember.dart';
+import 'package:tiny_kms_directory/src/services/sqlLite/dboMember.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -40,8 +40,8 @@ Future<void> deleteAllData() async {
   });
 }
 
-void _deleteDb() async {
-  var databasesPath = await getDatabasesPath();
-  String path = join(databasesPath, DB_NAME);
-  await deleteDatabase(path);
-}
+// void _deleteDb() async {
+//   var databasesPath = await getDatabasesPath();
+//   String path = join(databasesPath, DB_NAME);
+//   await deleteDatabase(path);
+// }

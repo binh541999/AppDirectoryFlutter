@@ -1,31 +1,20 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:redux_example/src/providers/GroupMemberModel.dart';
-import 'package:redux_example/src/providers/GroupModel.dart';
-import 'package:redux_example/src/providers/MemberModel.dart';
-import 'package:redux_example/src/providers/StatusModel.dart';
-import 'package:redux_example/src/scenes/LogIn.dart';
-import 'package:redux_example/src/services/api/groupApi/groupAPI.dart';
-import 'package:redux_example/src/services/api/groupMemberApi/groupMemberApi.dart';
-import 'package:redux_example/src/services/api/memberApi/fetchData.dart';
-import 'package:redux_example/src/services/sqlLite/dboDB.dart';
-import 'package:redux_example/src/services/sqlLite/dboGroup.dart';
-import 'package:redux_example/src/services/sqlLite/dboGroupMember.dart';
-import 'package:redux_example/src/services/sqlLite/dboMember.dart';
+import 'package:tiny_kms_directory/src/providers/GroupMemberModel.dart';
+import 'package:tiny_kms_directory/src/providers/GroupModel.dart';
+import 'package:tiny_kms_directory/src/providers/MemberModel.dart';
+import 'package:tiny_kms_directory/src/providers/StatusModel.dart';
+import 'package:tiny_kms_directory/src/scenes/LogIn.dart';
+import 'package:tiny_kms_directory/src/services/api/memberApi/fetchData.dart';
+import 'package:tiny_kms_directory/src/services/sqlLite/dboDB.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 
 class CustomDrawer extends StatelessWidget {
 
-  Future<void> deleteDB(BuildContext context) async {
+  Future<void> logoutPress(BuildContext context) async {
 
-    // deleteDataMember();
-    // deleteDataGroup();
-    // deleteDataGroupMember();
     deleteAllData();
-
     Provider.of<MemberModel>(context, listen: false).removeAll();
     Provider.of<StatusModel>(context, listen: false).removeAll();
     Provider.of<GroupModel>(context, listen: false).removeAll();
@@ -34,7 +23,12 @@ class CustomDrawer extends StatelessWidget {
     await preferences.clear();
     await Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (BuildContext context) => LogIn()));
-    //Navigator.pushNamed(context, '/');
+
+  }
+
+  Future<void> updateContactPress(BuildContext context) async {
+    deleteAllData();
+    fetchGetContact(context);
 
   }
 
@@ -42,7 +36,6 @@ class CustomDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: ListView(
-        // Important: Remove any padding from the ListView.
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
@@ -51,6 +44,7 @@ class CustomDrawer extends StatelessWidget {
             ),
             child: Column(children: [
               Consumer<MemberModel>(builder: (context, membersData, child) {
+                print(membersData.userInfo);
                 return Column(
                   children: [
                     Container(
@@ -131,9 +125,8 @@ class CustomDrawer extends StatelessWidget {
                   ),
 
                   onPressed: () {
-                    // deleteDataMember();
-                    // fetchGetContact(context);
 
+                    updateContactPress(context);
                   },
                   //testPress,
                 ),
@@ -149,7 +142,7 @@ class CustomDrawer extends StatelessWidget {
                   ),
 
                   onPressed: () {
-                    deleteDB(context);
+                    logoutPress(context);
                   },
                   //testPress,
                 ),

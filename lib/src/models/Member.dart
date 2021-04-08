@@ -30,7 +30,6 @@ class Member {
     this.fullName,
   });
 
-  @override
   List<Object> get props => [employeeId, userName];
   Map<String, dynamic> toMap() {
     return Map<String, dynamic>()

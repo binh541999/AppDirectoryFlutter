@@ -2,13 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:redux_example/src/models/GroupMember.dart';
-import 'package:redux_example/src/models/Groups.dart';
-import 'package:redux_example/src/providers/GroupMemberModel.dart';
-import 'package:redux_example/src/scenes/ContactDetail.dart';
-import 'package:redux_example/src/models/Member.dart';
-import 'package:redux_example/src/scenes/Group.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:tiny_kms_directory/src/models/GroupMember.dart';
+import 'package:tiny_kms_directory/src/providers/GroupMemberModel.dart';
+import 'package:tiny_kms_directory/src/models/Member.dart';
 
 class CustomChooseContact extends StatefulWidget {
   CustomChooseContact({
@@ -29,41 +25,35 @@ class _CustomChooseContact extends State<CustomChooseContact> {
   bool _isSelected = false;
 
   void checkChecked() {
-    var members =  Provider.of<GroupMemberModel>(context, listen: false).currentGroupMembers;
+    var members = Provider.of<GroupMemberModel>(context, listen: false)
+        .currentGroupMembers;
     var index = members.indexWhere(
-            (element) => element.userName == widget.employeeData.userName);
-    // var index = notes.indexWhere((element) =>
-    // element == member.employeeId);
-   if(index > -1 )
-      _isSelected = true;
-
+        (element) => element.userName == widget.employeeData.userName);
+    if (index > -1) _isSelected = true;
   }
+
   void initState() {
     // TODO: implement initState
     super.initState();
     checkChecked();
-
   }
+
   void _onPressContact() {
     setState(() {
       _isSelected = !_isSelected;
-      if(_isSelected) {
+      if (_isSelected) {
         var newGroupMember = new GroupMember(
-          idGroup:  widget.idCurrentGroup,
-            userName: widget.employeeData.userName
-        );
-        Provider.of<GroupMemberModel>(context, listen: false).addGroupMember(
-            newGroupMember);
-      }
-      else {
+            idGroup: widget.idCurrentGroup,
+            userName: widget.employeeData.userName);
+        Provider.of<GroupMemberModel>(context, listen: false)
+            .addGroupMember(newGroupMember);
+      } else {
         var newGroupMember = new GroupMember(
-            idGroup:  widget.idCurrentGroup,
-            userName: widget.employeeData.userName
-        );
-        Provider.of<GroupMemberModel>(context, listen: false).deleteGroupMember(
-            newGroupMember);
+            idGroup: widget.idCurrentGroup,
+            userName: widget.employeeData.userName);
+        Provider.of<GroupMemberModel>(context, listen: false)
+            .deleteGroupMember(newGroupMember);
       }
-
     });
   }
 
@@ -79,7 +69,7 @@ class _CustomChooseContact extends State<CustomChooseContact> {
               Expanded(
                 child: RawMaterialButton(
                     splashColor: Colors.grey,
-                    onPressed:() {
+                    onPressed: () {
                       _onPressContact();
                     },
                     child: Row(

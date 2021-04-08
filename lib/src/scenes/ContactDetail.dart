@@ -1,8 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
-import 'package:redux_example/src/Components/CustomChooseGroup.dart';
-import 'package:redux_example/src/models/Member.dart';
+import 'package:tiny_kms_directory/src/Components/CustomChooseGroup.dart';
+import 'package:tiny_kms_directory/src/models/Member.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -34,7 +34,7 @@ class ContactDetail extends StatelessWidget {
       //
       // await ContactsService.addContact(newContact);
       //
-       await ContactsService.openContactForm();
+      await ContactsService.openContactForm();
     } else {
       print('not granted');
     }
@@ -73,8 +73,7 @@ class ContactDetail extends StatelessWidget {
                                     CircularProgressIndicator(),
                                 errorWidget: (context, url, error) => Image.asset(
                                     'lib/src/assets/Image/avatarDefault.png'),
-                              )
-                              ),
+                              )),
                         ),
                         SizedBox(
                           width: 15.0,
@@ -139,7 +138,8 @@ class ContactDetail extends StatelessWidget {
                                 child: Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: FloatingActionButton(
-                                      heroTag: employeeData.employeeId.toString(),
+                                      heroTag:
+                                          employeeData.employeeId.toString(),
                                       tooltip: 'Message',
                                       backgroundColor: Colors.transparent,
                                       foregroundColor: Colors.black,

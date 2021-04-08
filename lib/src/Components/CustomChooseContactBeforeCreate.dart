@@ -2,14 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:redux_example/src/models/GroupMember.dart';
-import 'package:redux_example/src/models/Groups.dart';
-import 'package:redux_example/src/providers/GroupMemberModel.dart';
-import 'package:redux_example/src/providers/MemberModel.dart';
-import 'package:redux_example/src/scenes/ContactDetail.dart';
-import 'package:redux_example/src/models/Member.dart';
-import 'package:redux_example/src/scenes/Group.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:tiny_kms_directory/src/providers/MemberModel.dart';
+import 'package:tiny_kms_directory/src/models/Member.dart';
 
 class CustomChooseContactBeforeCreateGroup extends StatefulWidget {
   CustomChooseContactBeforeCreateGroup({
@@ -119,7 +113,6 @@ class _CustomChooseContact extends State<CustomChooseContactBeforeCreateGroup> {
                                   }
                                   return Checkbox(
                                     value: isSelected,
-
                                   );
                                 }),
                               )),

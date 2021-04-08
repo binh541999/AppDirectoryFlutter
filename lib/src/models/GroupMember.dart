@@ -8,7 +8,6 @@ class GroupMember {
     this.userName,
   });
 
-  @override
   List<Object> get props => [idGroup, userName];
   Map<String, dynamic> toMap() {
     return Map<String, dynamic>()

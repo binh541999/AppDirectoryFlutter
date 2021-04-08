@@ -1,7 +1,6 @@
-import 'package:redux_example/src/models/Member.dart';
-import 'package:redux_example/src/services/sqlLite/dboDB.dart';
+import 'package:tiny_kms_directory/src/models/Member.dart';
+import 'package:tiny_kms_directory/src/services/sqlLite/dboDB.dart';
 import 'package:sqflite/sqflite.dart';
-
 
 const String TABLE_NAME = "Members";
 
@@ -34,14 +33,13 @@ Future<List<Member>> selectAllMember() async {
   //List<Movie> movies = maps.map((e) => Movie.formJson(e)).toList();
   // Convert the List<Map<String, dynamic> into a List<Dog>.
   return List.generate(maps.length, (i) {
-    return
-      Member(
+    return Member(
       employeeId: maps[i]['employeeId'],
-        employeeCode: maps[i]['employeeCode'],
+      employeeCode: maps[i]['employeeCode'],
       shortName: maps[i]["shortName"],
       email: maps[i]["email"],
       skype: maps[i]["skype"],
-        mobilePhone: maps[i]["mobilePhone"],
+      mobilePhone: maps[i]["mobilePhone"],
       userName: maps[i]["userName"],
       currentOfficeFullName: maps[i]["currentOfficeFullName"],
       currentOffice: maps[i]["currentOffice"],
@@ -60,14 +58,12 @@ Future<void> insertItemMember(Member member) async {
   await db.transaction((txn) async {
     var batch = txn.batch();
     batch.insert(
-    'Members',
-    member.toMap(),
+      'Members',
+      member.toMap(),
     );
     await batch.commit();
   });
-
 }
-
 
 Future<void> deleteDataMember() async {
   // Get a reference to the database.
@@ -75,9 +71,7 @@ Future<void> deleteDataMember() async {
 
   await db.transaction((txn) async {
     var batch = txn.batch();
-    batch.delete(
-        'Members'
-    );
+    batch.delete('Members');
     await batch.commit();
   });
 }

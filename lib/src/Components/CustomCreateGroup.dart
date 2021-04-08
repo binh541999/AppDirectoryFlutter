@@ -1,16 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:redux_example/src/Components/CustomChooseContactBeforeCreate.dart';
-import 'package:redux_example/src/models/GroupMember.dart';
-import 'package:redux_example/src/models/Groups.dart';
-import 'package:redux_example/src/models/MemberUsernameOnly.dart';
-import 'package:redux_example/src/providers/GroupMemberModel.dart';
-import 'package:redux_example/src/providers/GroupModel.dart';
-import 'package:redux_example/src/providers/MemberModel.dart';
-import 'package:redux_example/src/services/api/groupApi/groupAPI.dart';
-
+import 'package:tiny_kms_directory/src/Components/CustomChooseContactBeforeCreate.dart';
+import 'package:tiny_kms_directory/src/models/GroupMember.dart';
+import 'package:tiny_kms_directory/src/models/Groups.dart';
+import 'package:tiny_kms_directory/src/models/MemberUsernameOnly.dart';
+import 'package:tiny_kms_directory/src/providers/GroupMemberModel.dart';
+import 'package:tiny_kms_directory/src/providers/GroupModel.dart';
+import 'package:tiny_kms_directory/src/providers/MemberModel.dart';
+import 'package:tiny_kms_directory/src/services/api/groupApi/groupAPI.dart';
 
 customCreateGroup(BuildContext context) {
   final groupName = TextEditingController();
@@ -18,7 +16,6 @@ customCreateGroup(BuildContext context) {
   var _controller = TextEditingController();
   bool _validate = false;
 
-  // show the dialog
   showGeneralDialog(
     context: context,
     barrierDismissible: false,
@@ -56,9 +53,9 @@ customCreateGroup(BuildContext context) {
                     ),
                     onPressed: () async {
                       groupsData.groups.forEach((element) {
-                        if (element.name == groupName.text || groupName.text == '') {
+                        if (element.name == groupName.text ||
+                            groupName.text == '') {
                           _validate = true;
-
                         }
                       });
 
@@ -110,7 +107,8 @@ customCreateGroup(BuildContext context) {
                       } else {
                         _formKey.currentState.validate();
                         _validate = false;
-                      };
+                      }
+
                     },
                   );
                 },
@@ -267,15 +265,16 @@ customCreateGroup(BuildContext context) {
               Expanded(
                 child: Consumer<MemberModel>(
                     builder: (context, membersData, child) {
-                  var memberlist = membersData.members.where((member) => member.userName != null).toList();
+                  var memberlist = membersData.members
+                      .where((member) => member.userName != null)
+                      .toList();
 
                   return ListView.builder(
                       itemCount: memberlist.length,
                       itemBuilder: (BuildContext context, int index) {
                         return CustomChooseContactBeforeCreateGroup(
                           employeeData: memberlist[index],
-                          key: Key(
-                              memberlist[index].employeeId.toString()),
+                          key: Key(memberlist[index].employeeId.toString()),
                         );
                       });
                 }),

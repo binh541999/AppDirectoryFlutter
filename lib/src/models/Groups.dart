@@ -8,7 +8,6 @@ class Groups {
     this.name,
   });
 
-  @override
   List<Object> get props => [id, name];
   Map<String, dynamic> toMap() {
     return Map<String, dynamic>()

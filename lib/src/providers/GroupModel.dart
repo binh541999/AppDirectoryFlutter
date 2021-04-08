@@ -1,13 +1,10 @@
-
 import 'dart:collection';
-
 import 'package:flutter/material.dart';
-import 'package:redux_example/src/models/Groups.dart';
-import 'package:redux_example/src/services/sqlLite/dboGroup.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tiny_kms_directory/src/models/Groups.dart';
+import 'package:tiny_kms_directory/src/services/sqlLite/dboGroup.dart';
 
 class GroupModel extends ChangeNotifier {
-  List<Groups> _groups= [];
+  List<Groups> _groups = [];
   Groups _currentGroup = new Groups();
 
   UnmodifiableListView<Groups> get groups => UnmodifiableListView(_groups);
@@ -17,12 +14,11 @@ class GroupModel extends ChangeNotifier {
     try {
       if (json != null) {
         for (final value in json) {
-          //print('value $json');
           var group = new Groups(
             id: value['group_id'],
             name: value['group_name'],
           );
-          _groups.insert(0,group);
+          _groups.insert(0, group);
         }
       }
     } catch (error) {
@@ -31,9 +27,8 @@ class GroupModel extends ChangeNotifier {
   }
 
   Future<void> loadData() async {
-    _groups =  ((await selectAllGroup()).reversed).toList();
-    if(_groups.length != 0)
-      _currentGroup = _groups[0];
+    _groups = ((await selectAllGroup()).reversed).toList();
+    if (_groups.length != 0) _currentGroup = _groups[0];
     notifyListeners();
   }
 
@@ -43,10 +38,8 @@ class GroupModel extends ChangeNotifier {
     notifyListeners();
   }
 
-
   void deleteGroup(int groupID) {
-    if(_groups.length != 0) {
-    //  _groups.removeWhere((group) => group.id == groupID);
+    if (_groups.length != 0) {
       _groups.removeWhere((group) {
         return group.id == groupID;
       });
@@ -56,9 +49,8 @@ class GroupModel extends ChangeNotifier {
   }
 
   void updateGroup(Groups group) {
-    if(_groups.length != 0) {
-      //  _groups.removeWhere((group) => group.id == groupID);
-      var index  = _groups.indexWhere((element) => element.id == group.id);
+    if (_groups.length != 0) {
+      var index = _groups.indexWhere((element) => element.id == group.id);
       _groups[index].name = group.name;
       updateItemGroup(group);
       notifyListeners();
@@ -66,7 +58,7 @@ class GroupModel extends ChangeNotifier {
   }
 
   void addGroup(Groups group) {
-    _groups.insert(0,group);
+    _groups.insert(0, group);
     insertItemGroup(group);
     notifyListeners();
   }
@@ -74,7 +66,6 @@ class GroupModel extends ChangeNotifier {
   void removeAll() {
     _groups.clear();
     _currentGroup = new Groups();
-    // This call tells the widgets that are listening to this model to rebuild.
     notifyListeners();
   }
 }

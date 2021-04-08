@@ -5,7 +5,6 @@ class MemberUsernameOnly {
     this.username,
   });
 
-  @override
 
   Map<String, dynamic> toJson() {
     return Map<String, dynamic>()
